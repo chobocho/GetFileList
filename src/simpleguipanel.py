@@ -70,6 +70,7 @@ class SimpleGuiPanel(wx.Panel):
         for file in files:
             #print(file)
             fileList += file + "\n"
+        fileList += "\n\nTotal: " + str(len(files))
         self.text.SetValue(fileList)
 
     def OnClearBtn(self, event):
