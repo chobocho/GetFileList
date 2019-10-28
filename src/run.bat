@@ -1,0 +1,2 @@
+python getfilelist.py
+pause
