@@ -85,9 +85,9 @@ def getFileList(folders):
                         #if isDebugMode: print ("%s/%s " % (path, filename))
                         if isDebugMode: print ("%s : %d" % (tf, folderInfo[tf]))
                         if aResult.get(folderInfo[tf]) == None:
-                            aResult[folderInfo[tf]] = 1
+                            aResult[folderInfo[tf]] = [tf]
                         else:
-                            aResult[folderInfo[tf]] += 1
+                            aResult[folderInfo[tf]].append(tf)
                     except:
                         error_msg.append('Fail to get size of ' + tf)
                         print (error_msg[-1])

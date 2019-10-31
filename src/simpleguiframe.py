@@ -1,5 +1,6 @@
 import wx
 from simpleguipanel import *
+from menu import * 
 
 class SimpleGuiFrame(wx.Frame):
     def __init__(self, *args, version, **kw):
@@ -14,19 +15,7 @@ class SimpleGuiFrame(wx.Frame):
         self._addMenubar()
 
     def _addMenubar(self):
-        menubar = wx.MenuBar()
-        fileMenu = wx.Menu()
-        fileItem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit App')
-        self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
-        menubar.Append(fileMenu, '&File')
-
-        helpMenu = wx.Menu()
-        aboutItemId = wx.NewId()
-        aboutItem = helpMenu.Append(aboutItemId, 'About', 'About')
-        self.Bind(wx.EVT_MENU, self.OnAbout, aboutItem)
-        menubar.Append(helpMenu, '&Help')
-
-        self.SetMenuBar(menubar)
+        self.menu = SimpleGuiMenu(self)
 
     def OnQuit(self, event):
         self.Close()
@@ -35,3 +24,12 @@ class SimpleGuiFrame(wx.Frame):
         msg = self.version + '\nhttp://chobocho.com'
         title = 'About'
         wx.MessageBox(msg, title, wx.OK | wx.ICON_INFORMATION)
+
+    def OnFindSameSize(self, event):
+        print ("OnFindSameSize")
+        self.panel.OnFindSameSize()
+
+    def OnFindDuplicate(self, event):
+        print ("OnFindDuplicate")
+        self.panel.OnFindDuplicate()
+

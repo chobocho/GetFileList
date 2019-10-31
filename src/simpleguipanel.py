@@ -1,6 +1,6 @@
 import wx
 from filedrop import *
-import fileutil
+from doaction import *
 
 WINDOW_SIZE = 480
 BTN_SIZE = 50
@@ -10,6 +10,7 @@ class SimpleGuiPanel(wx.Panel):
     def __init__(self, *args, **kw):
         super(SimpleGuiPanel, self).__init__(*args, **kw)
         filedrop = FileDrop(self)
+        self.doaction = DoAction()
         self.filter = []
         self.filelist = []
         self.SetDropTarget(filedrop)
@@ -18,13 +19,13 @@ class SimpleGuiPanel(wx.Panel):
 
     def OnSetFilter(self, event):
         self.filter = self.filterText.GetValue()
-        filteredFileList = fileutil.getFilteredFileList(self.filelist, self.filter)
+        filteredFileList = self.doaction.getFilteredFileList(self.filter)
         self._printFileList(filteredFileList)
 
     def OnClearFilter(self, event):
         self.filterText.SetValue("")
         self.filter = []
-        self._printFileList(self.filelist)
+        self._printFileList(self.doaction.getFileList())
 
     def _OnDrawFilterBox(self, sizer):
         filterBox = wx.BoxSizer(wx.HORIZONTAL)
@@ -59,11 +60,8 @@ class SimpleGuiPanel(wx.Panel):
         self.SetSizer(self.sizer)
 
     def OnCallback(self, filelist):
-        checkFileList, checkFileSize = fileutil.getFileList(filelist)
-        # print (checkFileList)
-        self.filelist = checkFileList
-        filteredFileList = fileutil.getFilteredFileList(checkFileList, self.filter)
-        self._printFileList(filteredFileList)
+        checkFileList = self.doaction.getFileList(filelist, self.filter)
+        self._printFileList(checkFileList)
 
     def _printFileList(self, files):
         fileList = ""
@@ -75,3 +73,32 @@ class SimpleGuiPanel(wx.Panel):
 
     def OnClearBtn(self, event):
         self.text.SetValue("")
+
+    def OnFindSameSize(self):
+        sameSizeFileList = self.doaction.getSameSizefileList()
+
+        fileList = ""
+        count = 0
+        for files in sameSizeFileList:
+            if count > 0:
+                fileList += "------------------------\n"
+            fileList += self.GetSize(files) + "\n"
+            for f in sameSizeFileList[files]:
+                fileList += f + "\n"
+                count += 1
+
+        fileList += "\n\nTotal: " + str(count)
+        self.text.SetValue(fileList)
+
+    def OnFindDuplicate(self):
+        pass
+
+    def GetSize(self, s):
+        _1K = 1024
+        _1M = 1048576
+
+        if s < _1K:
+            return str(s) + "B"
+        if s < _1M:
+            return str(int(s/_1K)) + "K = " + str(s) + "B"
+        return str(int(s/_1M)) + "M = " + str(s) + "B"
