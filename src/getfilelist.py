@@ -2,7 +2,7 @@ import wx
 from simpleguiframe import *
 
 SW_TITLE = "Get file list v0.1105SJ2"
-WINDOW_SIZE = 480
+WINDOW_SIZE = 640
 
 def main(): 
     app = wx.App()

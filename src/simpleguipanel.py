@@ -31,12 +31,12 @@ class SimpleGuiPanel(wx.Panel):
         self.filterText = wx.TextCtrl(self,style = wx.TE_PROCESS_ENTER,size=(WINDOW_SIZE-BTN_SIZE*2,BTN_HEIGHT))
         self.filterText.Bind(wx.EVT_TEXT_ENTER, self.OnSetFilter)
         self.filterText.SetValue("")
-        filterBox.Add(self.filterText, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
+        filterBox.Add(self.filterText, 1, wx.ALIGN_CENTRE|wx.ALL, 1)
 
         clearBtnId = wx.NewId()
         clearBtn = wx.Button(self, clearBtnId, "Clear", size=(BTN_SIZE,30))
         clearBtn.Bind(wx.EVT_BUTTON, self.OnClearFilter)
-        filterBox.Add(clearBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
+        filterBox.Add(clearBtn, 0, wx.ALIGN_CENTRE|wx.LEFT, 1)
 
         sizer.Add(filterBox, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
 
