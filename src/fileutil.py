@@ -81,7 +81,7 @@ def getFileList(folders):
                     if isDebugMode: 
                         print (tf)
                     try:
-                        folderInfo[tf] = os.path.getsize(tf);
+                        folderInfo[tf] = os.path.getsize(tf)
                         #if isDebugMode: print ("%s/%s " % (path, filename))
                         if isDebugMode: print ("%s : %d" % (tf, folderInfo[tf]))
                         if aResult.get(folderInfo[tf]) == None:
