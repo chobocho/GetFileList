@@ -1,7 +1,7 @@
 import wx
 from simpleguiframe import *
 
-SW_TITLE = "Get file list v0.1105SK1"
+SW_TITLE = "Get file list v0.1105SK3"
 WINDOW_SIZE = 640
 
 def main(): 

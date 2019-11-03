@@ -63,11 +63,8 @@ class SimpleGuiPanel(wx.Panel):
         checkFileList = self.doaction.getFileList(filelist, self.filter)
         self._printFileList(checkFileList)
 
-    def _printFileList(self, files):
-        fileList = ""
-        for file in files:
-            #print(file)
-            fileList += file + "\n"
+    def _printFileList(self, files):       
+        fileList = "\n".join(files)
         fileList += "\n\nTotal: " + str(len(files))
         self.text.SetValue(fileList)
 
