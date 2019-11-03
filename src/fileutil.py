@@ -1,6 +1,8 @@
 import os
+import hashlib
 
 isDebugMode = False
+LIMITED_SIZE = 65536
 
 def getFilteredFileList(filelist, filter):
     print ("getFilteredFileList")
@@ -97,3 +99,41 @@ def getFileList(folders):
 
     #print (folderInfo)
     return folderInfo, aResult
+
+
+def isSameFile(f1, f2):
+    bufsize = LIMITED_SIZE
+    with open(f1, 'rb') as fp1, open(f2, 'rb') as fp2:
+        b1 = fp1.read(bufsize)
+        b2 = fp2.read(bufsize)
+        if b1 != b2:
+            return False
+        return True
+
+def getHashValue(filepath):
+    chunksize = LIMITED_SIZE
+    hash = hashlib.md5()
+
+    with open(filepath, 'rb') as afile:
+        buf = afile.read(chunksize)
+        while len(buf) > 0:
+            buf = afile.read(chunksize)
+            hash.update(buf)
+
+    retHash = hash.hexdigest()
+    #print retHash 
+    return retHash
+
+def getMyHash(filepath):
+    chunksize = 1024
+
+    with open(filepath, 'rb') as afile:
+        buf = afile.read(chunksize)
+
+    bound = '0.1105' * 171
+    if len(buf) < 1024:
+        myHash = buf.decode('utf-8') + bound
+    else:
+        myHash = buf
+    print (myHash)
+    return myHash[0:1024]

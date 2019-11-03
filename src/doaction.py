@@ -20,12 +20,7 @@ class DoAction():
 
         self.filelist, sameSizeFile = fileutil.getFileList(folername)
         
-        for item in sameSizeFile:
-            s = len(sameSizeFile[item])
-            if s == 1:
-                continue
-            self.sameSizeFile[item] = sameSizeFile[item]
-            #self.Println(item, len(self.duplicatefile[item]))
+        self.sameSizeFile = {key: value for (key, value) in sameSizeFile.items() if len(value) >= 2}
         
         self.Println("Same size file set: ", len(self.sameSizeFile))
         if len(filter) == 0:
@@ -39,5 +34,14 @@ class DoAction():
     def getSameSizefileList(self):
         return self.sameSizeFile
 
-    def getDuplicateFileList(self):
+    def getDuplicatefileList(self):
+        print("getDuplicatefileList")
+        self.duplicatefile = {}
+        
+        for key, value  in self.sameSizeFile.items():
+            if len(value) == 2:
+                if fileutil.isSameFile(value[0], value[1]):
+                    self.duplicatefile[key] = value
+            else:
+                pass
         return self.duplicatefile

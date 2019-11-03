@@ -74,21 +74,33 @@ class SimpleGuiPanel(wx.Panel):
     def OnFindSameSize(self):
         sameSizeFileList = self.doaction.getSameSizefileList()
 
-        fileList = ""
+        fileList = []
         count = 0
         for files in sameSizeFileList:
             if count > 0:
-                fileList += "------------------------\n"
-            fileList += self.GetSize(files) + "\n"
+                fileList.append("------------------------")
+            fileList.append(self.GetSize(files))
             for f in sameSizeFileList[files]:
-                fileList += f + "\n"
+                fileList.append(f)
                 count += 1
 
-        fileList += "\n\nTotal: " + str(count)
-        self.text.SetValue(fileList)
+        fileList.append("\n\nTotal: " + str(count))
+        self.text.SetValue("\n".join(fileList))
 
     def OnFindDuplicate(self):
-        pass
+        duplicateFileList = self.doaction.getDuplicatefileList()
+        fileList = []
+        count = 0
+        for files in duplicateFileList:
+            if count > 0:
+                fileList.append("------------------------")
+            fileList.append(self.GetSize(files))
+            for f in duplicateFileList[files]:
+                fileList.append(f)
+                count += 1
+
+        fileList.append("\n\nTotal: " + str(count))
+        self.text.SetValue("\n".join(fileList))
 
     def GetSize(self, s):
         _1K = 1024
