@@ -1,11 +1,13 @@
 import os
 import hashlib
+import logging
 
 isDebugMode = False
 LIMITED_SIZE = 65536
 
 def getFilteredFileList(filelist, filter):
-    print ("getFilteredFileList")
+    logger = logging.getLogger('getfilelist')
+    logger.info (".")
 
     if len(filter) == 0:
         return filelist
@@ -15,7 +17,7 @@ def getFilteredFileList(filelist, filter):
 
     filterList = []
     tmpFilterList = filter.split('|')
-    #print (tmpFilterList)
+    #logger.debug (tmpFilterList)
     for it in tmpFilterList:
         if len(it) == 0:
             continue
@@ -36,7 +38,8 @@ def getFilteredFileList(filelist, filter):
     return filteredFile
 
 def getAndFilteredFileList(filelist, filter):
-    print ("getAndFilteredFileList")
+    logger = logging.getLogger('getfilelist')
+    logger.info (".")
 
     if len(filter) == 0:
         return filelist
@@ -48,7 +51,7 @@ def getAndFilteredFileList(filelist, filter):
         if len(it) == 0:
             continue
         filterList.append(it.lower())
-    #print (filterList)
+    #logger.debug (filterList)
 
     if len(filterList) == 0:
         return filelist
@@ -63,13 +66,14 @@ def getAndFilteredFileList(filelist, filter):
                 isMatch = False
                 break
         if isMatch:
-            #print("Append: " + f)
+            #logger.debug("Append: " + f)
             filteredFile.append(f)
     
     return filteredFile
 
 def getFileList(folders):
-    print ("getFileList")
+    logger = logging.getLogger('getfilelist')
+    logger.info (".")
     global isDebugMode
     error_msg = []
     aResult = {}  
@@ -77,27 +81,38 @@ def getFileList(folders):
 
     for folder in folders:
         if os.path.exists(folder):
+            if os.path.isfile(folder):
+                logger.debug ("File : " + folder)
+                try:
+                    folderInfo[folder] = os.path.getsize(folder)
+                    if isDebugMode: logger.debug ("%s : %d" % (folder, folderInfo[folder]))
+                    if aResult.get(folderInfo[folder]) == None:
+                        aResult[folderInfo[folder]] = [folder]
+                    else:
+                        aResult[folderInfo[folder]].append(folder)
+                except:
+                    error_msg.append('Fail to get size of ' + folder)
+                    logger.exception (error_msg[-1])
+                continue
             for (path, dir, files) in os.walk(folder):
                 for filename in files:
                     tf = os.path.join(path, filename)
                     if isDebugMode: 
-                        print (tf)
+                        logger.debug (tf)
                     try:
                         folderInfo[tf] = os.path.getsize(tf)
-                        #if isDebugMode: print ("%s/%s " % (path, filename))
-                        if isDebugMode: print ("%s : %d" % (tf, folderInfo[tf]))
+                        if isDebugMode: logger.debug ("%s : %d" % (tf, folderInfo[tf]))
                         if aResult.get(folderInfo[tf]) == None:
                             aResult[folderInfo[tf]] = [tf]
                         else:
                             aResult[folderInfo[tf]].append(tf)
                     except:
                         error_msg.append('Fail to get size of ' + tf)
-                        print (error_msg[-1])
+                        logger.exception (error_msg[-1])
  
         else:
-            print ("Error:",folder," is not exist")           
+            logger.warning("Error:",folder," is not exist")
 
-    #print (folderInfo)
     return folderInfo, aResult
 
 
@@ -120,8 +135,7 @@ def getHashValue(filepath):
             buf = afile.read(chunksize)
             hash.update(buf)
 
-    retHash = hash.hexdigest()
-    #print retHash 
+    retHash = hash.hexdigest() 
     return retHash
 
 def getMyHash(filepath):
