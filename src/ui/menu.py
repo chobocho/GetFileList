@@ -1,6 +1,6 @@
 import wx
 
-class SimpleGuiMenu():
+class GetFileListMenu():
     def __init__(self, parent):
         self.parent = parent
         self._addMenubar()

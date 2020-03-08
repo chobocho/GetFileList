@@ -1,5 +1,5 @@
 import os
-import fileutil
+import util.fileutil
 
 class DoAction():
     def __init__(self):
@@ -18,7 +18,7 @@ class DoAction():
         if len(folername) == 0:
             return self.filelist
 
-        self.filelist, sameSizeFile = fileutil.getFileList(folername)
+        self.filelist, sameSizeFile = util.fileutil.getFileList(folername)
         
         self.sameSizeFile = {key: value for (key, value) in sameSizeFile.items() if len(value) >= 2}
         
@@ -29,7 +29,7 @@ class DoAction():
         return self.getFilteredFileList(filter)
     
     def getFilteredFileList(self, filter):
-        return fileutil.getFilteredFileList(self.filelist, filter)
+        return util.fileutil.getFilteredFileList(self.filelist, filter)
 
     def getSameSizefileList(self):
         return self.sameSizeFile

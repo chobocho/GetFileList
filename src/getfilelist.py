@@ -1,9 +1,9 @@
 import wx
-from simpleguiframe import *
+from ui.getfilelistframe import *
 import logging
 import logging.handlers
 
-SW_TITLE = "Get file list v0.1105SK5"
+SW_TITLE = "Get file list v0.1105TC1"
 WINDOW_SIZE = 640
 MAX_LOG_SIZE = 512 * 1024
 
@@ -32,7 +32,7 @@ def printEnd():
 def main(): 
     initLogger()
     app = wx.App()
-    frm = SimpleGuiFrame(None, version= SW_TITLE, title=SW_TITLE, size=(WINDOW_SIZE,WINDOW_SIZE))
+    frm = GetFileListFrame(None, version= SW_TITLE, title=SW_TITLE, size=(WINDOW_SIZE,WINDOW_SIZE))
     frm.Show()
     app.MainLoop()
     printEnd()

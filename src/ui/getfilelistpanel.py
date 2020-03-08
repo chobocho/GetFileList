@@ -1,14 +1,14 @@
 import wx
-from filedrop import *
-from doaction import *
+from util.filedrop import *
+from action.doaction import *
 
 WINDOW_SIZE = 480
 BTN_SIZE = 50
 BTN_HEIGHT = 30
 
-class SimpleGuiPanel(wx.Panel):
+class GetFileListPanel(wx.Panel):
     def __init__(self, *args, **kw):
-        super(SimpleGuiPanel, self).__init__(*args, **kw)
+        super(GetFileListPanel, self).__init__(*args, **kw)
         filedrop = FileDrop(self)
         self.doaction = DoAction()
         self.filter = []

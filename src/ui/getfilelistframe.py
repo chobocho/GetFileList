@@ -1,11 +1,11 @@
 import wx
-from simpleguipanel import *
-from menu import * 
+from ui.getfilelistpanel import *
+from ui.menu import * 
 
-class SimpleGuiFrame(wx.Frame):
+class GetFileListFrame(wx.Frame):
     def __init__(self, *args, version, **kw):
-        super(SimpleGuiFrame, self).__init__(*args, **kw)
-        self.panel = SimpleGuiPanel(self)
+        super(GetFileListFrame, self).__init__(*args, **kw)
+        self.panel = GetFileListPanel(self)
         self.version = version
         
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -15,7 +15,7 @@ class SimpleGuiFrame(wx.Frame):
         self._addMenubar()
 
     def _addMenubar(self):
-        self.menu = SimpleGuiMenu(self)
+        self.menu = GetFileListMenu(self)
 
     def OnQuit(self, event):
         self.Close()
