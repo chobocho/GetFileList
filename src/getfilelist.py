@@ -2,8 +2,8 @@ import wx
 from ui.getfilelistframe import *
 import logging
 import logging.handlers
+from info import *
 
-SW_TITLE = "Get file list v0.1105TC1"
 WINDOW_SIZE = 640
 MAX_LOG_SIZE = 512 * 1024
 
