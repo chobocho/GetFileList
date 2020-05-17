@@ -58,6 +58,11 @@ class GetFileListPanel(wx.Panel):
         clearBtn = wx.Button(self, clearBtnId, "Clear", size=(50,30))
         clearBtn.Bind(wx.EVT_BUTTON, self.OnClearBtn)
         btnBox.Add(clearBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
+        
+        copyBtnId = wx.NewId()
+        copyBtn = wx.Button(self, copyBtnId, "Copy", size=(50,30))
+        copyBtn.Bind(wx.EVT_BUTTON, self.OnCopyBtn)
+        btnBox.Add(copyBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
 
         self.sizer.Add(btnBox, 0, wx.ALIGN_CENTER_VERTICAL, 5)
         self.SetSizer(self.sizer)
@@ -73,6 +78,16 @@ class GetFileListPanel(wx.Panel):
 
     def OnClearBtn(self, event):
         self.text.SetValue("")
+        
+    def OnCopyBtn(self, event):
+        toCopyData = self.text.GetValue()
+        
+        if len(toCopyData) == 0:
+            return 
+            
+        if wx.TheClipboard.Open():
+            wx.TheClipboard.SetData(wx.TextDataObject(toCopyData))
+            wx.TheClipboard.Close()
 
     def OnFindSameSize(self):
         sameSizeFileList = self.doaction.getSameSizefileList()
