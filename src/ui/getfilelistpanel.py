@@ -42,11 +42,14 @@ class GetFileListPanel(wx.Panel):
         sizer.Add(filterBox, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
 
     def _initUi(self):
+        font = wx.Font(12, wx.FONTFAMILY_TELETYPE, wx.NORMAL, wx.NORMAL)
+    
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self._OnDrawFilterBox(self.sizer)
 
         self.text = wx.TextCtrl(self, style = wx.TE_PROCESS_ENTER|wx.TE_READONLY|wx.TE_MULTILINE, size=(WINDOW_SIZE,WINDOW_SIZE))
         self.text.SetValue("")
+        self.text.SetFont(font)
         self.sizer.Add(self.text, 1, wx.EXPAND)
         
         btnBox = wx.BoxSizer(wx.HORIZONTAL)
