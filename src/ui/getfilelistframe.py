@@ -5,13 +5,14 @@ from ui.menu import *
 class GetFileListFrame(wx.Frame):
     def __init__(self, *args, version, **kw):
         super(GetFileListFrame, self).__init__(*args, **kw)
-        self.panel = GetFileListPanel(self)
+        self.textPanel = GetFileListPanel(self)
         self.version = version
         
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.panel, 1, wx.EXPAND)
-        self.SetSizer(sizer)
+        sizer.Add(self.textPanel, 1, wx.EXPAND)
 
+        self.SetSizer(sizer)
+        self.SetAutoLayout(True)
         self._addMenubar()
 
     def _addMenubar(self):
@@ -27,9 +28,9 @@ class GetFileListFrame(wx.Frame):
 
     def OnFindSameSize(self, event):
         print ("OnFindSameSize")
-        self.panel.OnFindSameSize()
+        self.textPanel.OnFindSameSize()
 
     def OnFindDuplicate(self, event):
         print ("OnFindDuplicate")
-        self.panel.OnFindDuplicate()
+        self.textPanel.OnFindDuplicate()
 

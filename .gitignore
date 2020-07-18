@@ -8,3 +8,8 @@
 /src/getfilelist.log
 /src/.idea
 /src/cbctrltext/__pycache__
+/src/buildinfo/__pycache__
+/src/buildinfo/build
+/src/buildinfo/getfilelist.spec
+/src/buildinfo/dist
+/src/buildinfo/version.json.bak

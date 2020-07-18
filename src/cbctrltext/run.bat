@@ -1,0 +1,2 @@
+python test_cbtextctrl.py
+pause
