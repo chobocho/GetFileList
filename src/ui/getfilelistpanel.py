@@ -34,14 +34,14 @@ class GetFileListPanel(wx.Panel):
         self.filterText = wx.TextCtrl(self,style = wx.TE_PROCESS_ENTER,size=(WINDOW_SIZE-BTN_SIZE*2,BTN_HEIGHT))
         self.filterText.Bind(wx.EVT_TEXT_ENTER, self.OnSetFilter)
         self.filterText.SetValue("")
-        filterBox.Add(self.filterText, 1, wx.ALIGN_CENTRE|wx.ALL, 1)
+        filterBox.Add(self.filterText, 1, wx.ALIGN_LEFT|wx.ALL, 1)
 
         clearBtnId = wx.NewId()
         clearBtn = wx.Button(self, clearBtnId, "Clear", size=(BTN_SIZE,30))
         clearBtn.Bind(wx.EVT_BUTTON, self.OnClearFilter)
         filterBox.Add(clearBtn, 0, wx.ALIGN_CENTRE|wx.LEFT, 1)
 
-        sizer.Add(filterBox, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
+        sizer.Add(filterBox, 0, wx.ALIGN_LEFT, 5)
 
     def __OnDrawCtrlBox(self, sizer, font):
         fileListID = wx.NewId()
@@ -70,7 +70,7 @@ class GetFileListPanel(wx.Panel):
         self.text.SetValue("")
         self.text.SetFont(font)
         self.text.Show(False)
-        self.sizer.Add(self.text, 1, wx.EXPAND)
+        self.sizer.Add(self.text, 0, wx.EXPAND)
         
         btnBox = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -84,7 +84,7 @@ class GetFileListPanel(wx.Panel):
         copyBtn.Bind(wx.EVT_BUTTON, self.OnCopyBtn)
         btnBox.Add(copyBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
 
-        self.sizer.Add(btnBox, 0, wx.ALIGN_CENTER_VERTICAL, 5)
+        self.sizer.Add(btnBox, 0, wx.ALL, 5)
         self.SetSizer(self.sizer)
         self.SetAutoLayout(True)
 
