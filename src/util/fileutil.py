@@ -75,46 +75,30 @@ def getFileList(folders):
     logger = logging.getLogger('getfilelist')
     logger.info (".")
     global isDebugMode
-    error_msg = []
-    aResult = {}  
-    folderInfo = {}  
+    folder_list = []
 
     for folder in folders:
         if os.path.exists(folder):
             if os.path.isfile(folder):
                 logger.debug ("File : " + folder)
-                try:
-                    folderInfo[folder] = os.path.getsize(folder)
-                    if isDebugMode: logger.debug ("%s : %d" % (folder, folderInfo[folder]))
-                    if aResult.get(folderInfo[folder]) == None:
-                        aResult[folderInfo[folder]] = [folder]
-                    else:
-                        aResult[folderInfo[folder]].append(folder)
-                except:
-                    error_msg.append('Fail to get size of ' + folder)
-                    logger.exception (error_msg[-1])
+                folder_list.append(folder)
                 continue
+
             for (path, dir, files) in os.walk(folder):
                 for filename in files:
                     tf = os.path.join(path, filename)
-                    if isDebugMode: 
-                        logger.debug (tf)
-                    try:
-                        folderInfo[tf] = os.path.getsize(tf)
-                        if isDebugMode: logger.debug ("%s : %d" % (tf, folderInfo[tf]))
-                        if aResult.get(folderInfo[tf]) == None:
-                            aResult[folderInfo[tf]] = [tf]
-                        else:
-                            aResult[folderInfo[tf]].append(tf)
-                    except:
-                        error_msg.append('Fail to get size of ' + tf)
-                        logger.exception (error_msg[-1])
- 
+                    folder_list.append(tf)
         else:
             logger.warning("Error:",folder," is not exist")
 
-    return folderInfo, aResult
+    return folder_list
 
+def getPath(filename):
+    ridx = filename.rfind('\\')
+    if ridx == -1:
+        return filename
+
+    return filename[:ridx]
 
 def isSameFile(f1, f2):
     bufsize = LIMITED_SIZE

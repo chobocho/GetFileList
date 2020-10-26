@@ -3,6 +3,7 @@ from util.filedrop import *
 from action.doaction import *
 import logging
 import subprocess
+import util.fileutil as fileutil
 
 WINDOW_SIZE = 640
 BTN_SIZE = 50
@@ -113,46 +114,15 @@ class GetFileListPanel(wx.Panel):
             wx.TheClipboard.SetData(wx.TextDataObject(toCopyData))
             wx.TheClipboard.Close()
 
-    def OnFindSameSize(self):
-        sameSizeFileList = self.doaction.getSameSizefileList()
-
-        fileList = []
-        count = 0
-        for files in sameSizeFileList:
-            if count > 0:
-                fileList.append("------------------------")
-            fileList.append(self.GetSize(files))
-            for f in sameSizeFileList[files]:
-                fileList.append(f)
-                count += 1
-
-        fileList.append("\n\nTotal: " + str(count))
-        self.text.SetValue("\n".join(fileList))
-
-    def OnFindDuplicate(self):
-        duplicateFileList = self.doaction.getDuplicatefileList()
-        fileList = []
-        count = 0
-        for files in duplicateFileList:
-            if count > 0:
-                fileList.append("------------------------")
-            fileList.append(self.GetSize(files))
-            for f in duplicateFileList[files]:
-                fileList.append(f)
-                count += 1
-
-        fileList.append("\n\nTotal: " + str(count))
-        self.text.SetValue("\n".join(fileList))
-
-    def GetSize(self, s):
-        _1K = 1024
-        _1M = 1048576
-
-        if s < _1K:
-            return str(s) + "B"
-        if s < _1M:
-            return str(int(s/_1K)) + "K = " + str(s) + "B"
-        return str(int(s/_1M)) + "M = " + str(s) + "B"
+    def OnGetChooseFilePath(self):
+        if self.fileList.GetItemCount() == 0:
+            return "c:/"
+        index = self.currentItem
+        if index < 0:
+            index = 0
+        chosenItem = self.fileList.GetItem(index, 1).GetText()
+        print(chosenItem)
+        return fileutil.getPath(chosenItem)
 
     def OnItemSelected(self, event):
         self.currentItem = event.Index
@@ -183,3 +153,6 @@ class GetFileListPanel(wx.Panel):
             self.fileList.SetItem(index, 1, file)
             if index % 2 == 0:
                 self.fileList.SetItemBackgroundColour(index, "Light blue")
+            if index > 10000:
+                print("Over than 10000", len(filelist))
+                break
