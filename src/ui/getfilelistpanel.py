@@ -17,6 +17,8 @@ class GetFileListPanel(wx.Panel):
         self.doaction = DoAction()
         self.filter = []
         self.filelist = []
+        self.current_files = []
+        self.chosenItem = ""
         self.SetDropTarget(filedrop)
         self._initUi()
 
@@ -73,23 +75,24 @@ class GetFileListPanel(wx.Panel):
         self.text.Show(False)
         self.sizer.Add(self.text, 0, wx.EXPAND)
         
-        btnBox = wx.BoxSizer(wx.HORIZONTAL)
+        #btnBox = wx.BoxSizer(wx.HORIZONTAL)
 
-        clearBtnId = wx.NewId()
-        clearBtn = wx.Button(self, clearBtnId, "Clear", size=(50,30))
-        clearBtn.Bind(wx.EVT_BUTTON, self.OnClearBtn)
-        btnBox.Add(clearBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
+        #clearBtnId = wx.NewId()
+        #clearBtn = wx.Button(self, clearBtnId, "Clear", size=(50,30))
+        #clearBtn.Bind(wx.EVT_BUTTON, self.OnClearBtn)
+        #btnBox.Add(clearBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
         
-        copyBtnId = wx.NewId()
-        copyBtn = wx.Button(self, copyBtnId, "Copy", size=(50,30))
-        copyBtn.Bind(wx.EVT_BUTTON, self.OnCopyBtn)
-        btnBox.Add(copyBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
+        #BtnId = wx.NewId()
+        #copyBtn = wx.Button(self, copyBtnId, "Copy", size=(50,30))
+        #copyBtn.Bind(wx.EVT_BUTTON, self.OnCopyBtn)
+        #btnBox.Add(copyBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
 
-        self.sizer.Add(btnBox, 0, wx.ALL, 5)
+        #self.sizer.Add(btnBox, 0, wx.ALL, 1)
         self.SetSizer(self.sizer)
         self.SetAutoLayout(True)
 
     def OnCallback(self, filelist):
+        self.current_files = filelist
         checkFileList = self.doaction.getFileList(filelist, self.filter)
         self.OnUpdateList(checkFileList)
         #self._printFileList(checkFileList)
@@ -101,17 +104,26 @@ class GetFileListPanel(wx.Panel):
         #self.text.SetValue(fileList)
         self.OnUpdateList(files)
 
+    def OnReload(self):
+        print("Reload")
+        self.chosenItem = ""
+        checkFileList = self.doaction.getFileList(self.current_files, self.filter)
+        self.OnUpdateList(checkFileList)
+
     def OnClearBtn(self, event):
         self.text.SetValue("")
         
     def OnCopyBtn(self, event):
-        toCopyData = self.text.GetValue()
-        
-        if len(toCopyData) == 0:
-            return 
+        self.OnCopyToClipboard()
+
+    def OnCopyToClipboard(self):
+        if len(self.chosenItem) == 0:
+            return
+
+        print("C2C: " + self.chosenItem)
             
         if wx.TheClipboard.Open():
-            wx.TheClipboard.SetData(wx.TextDataObject(toCopyData))
+            wx.TheClipboard.SetData(wx.TextDataObject(self.chosenItem))
             wx.TheClipboard.Close()
 
     def OnGetChooseFilePath(self):
@@ -126,23 +138,29 @@ class GetFileListPanel(wx.Panel):
 
     def OnItemSelected(self, event):
         self.currentItem = event.Index
+        self._OnItemSelected(self.currentItem)
 
     def _OnItemSelected(self, index):
+        self.chosenItem = ""
         if self.fileList.GetItemCount() == 0:
             self.logger.info("List is empty!")
             return
         if index < 0:
             index = 0
-        chosenItem = self.fileList.GetItem(index, 1).GetText()
+        self.chosenItem = self.fileList.GetItem(index, 1).GetText()
         #self.logger.info(str(index) + ':' + chosenItem)
-        print(chosenItem)
-        chosenItem = '"' + chosenItem + '"'
-        os.startfile(chosenItem)
+        print(self.chosenItem)
 
     def __OnRClicked(self, event):
         print("__OnRClicked")
         self.currentItem = event.Index
         self._OnItemSelected(self.currentItem)
+        if not os.path.exists(self.chosenItem):
+            self.chosenItem = ""
+            self.OnReload()
+            return
+        chosenItem = '"' + self.chosenItem + '"'
+        os.startfile(chosenItem)
 
     def OnUpdateList(self, filelist):
         self.logger.info('.')

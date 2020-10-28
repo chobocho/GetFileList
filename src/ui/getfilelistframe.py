@@ -22,6 +22,9 @@ class GetFileListFrame(wx.Frame):
         self.menu = GetFileListMenu(self)
 
     def _addShortKey(self):
+        ctrl_C_Id = wx.NewIdRef()
+        self.Bind(wx.EVT_MENU, self.OnCopyToClipboard, id=ctrl_C_Id)
+
         ctrl_D_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self._OnCtrl_D, id=ctrl_D_Id)
 
@@ -34,7 +37,8 @@ class GetFileListFrame(wx.Frame):
         ctrl_Q_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self.OnQuit, id=ctrl_Q_Id)
 
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('D'), ctrl_D_Id),
+        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('C'), ctrl_C_Id),
+                                         (wx.ACCEL_CTRL, ord('D'), ctrl_D_Id),
                                          (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
                                          (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
                                          (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id)])
@@ -42,6 +46,12 @@ class GetFileListFrame(wx.Frame):
 
     def OnQuit(self, event):
         self.Close()
+
+    def OnReload(self, event):
+        self.textPanel.OnReload()
+
+    def OnCopyToClipboard(self, event):
+        self.textPanel.OnCopyToClipboard()
 
     def _OnCtrl_D(self, event):
         path = self.textPanel.OnGetChooseFilePath()

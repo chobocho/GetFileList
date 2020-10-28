@@ -8,8 +8,13 @@ class GetFileListMenu():
     def _addMenubar(self):
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
-        fileItem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit App')
-        self.parent.Bind(wx.EVT_MENU, self.parent.OnQuit, fileItem)
+
+        reloadItemmId = wx.NewId()
+        reloadItem = fileMenu.Append(reloadItemmId, 'Reload', 'Reload folders')
+        self.parent.Bind(wx.EVT_MENU, self.parent.OnReload, reloadItem)
+
+        quitItem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit App')
+        self.parent.Bind(wx.EVT_MENU, self.parent.OnQuit, quitItem)
         menubar.Append(fileMenu, '&File')
 
         #editMenu = wx.Menu()
