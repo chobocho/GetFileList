@@ -55,13 +55,13 @@ class GetFileListFrame(wx.Frame):
 
     def _OnCtrl_D(self, event):
         path = self.textPanel.OnGetChooseFilePath()
-        self.action.OnRunCommand("explore", path)
+        self.action.on_run_command("explore", path)
 
     def _OnCtrl_M(self, event):
-        self.action.OnRunCommand("ctrl_m")
+        self.action.on_run_command("ctrl_m")
 
     def _OnCtrl_P(self, event):
-        self.action.OnRunCommand("ctrl_p")
+        self.action.on_run_command("ctrl_p")
 
     def OnAbout(self, event):
         msg = self.version + '\nhttp://chobocho.com'

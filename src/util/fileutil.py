@@ -5,9 +5,10 @@ import logging
 isDebugMode = False
 LIMITED_SIZE = 65536
 
+
 def getFilteredFileList(filelist, filter):
     logger = logging.getLogger('getfilelist')
-    logger.info (".")
+    logger.info(".")
 
     if len(filter) == 0:
         return filelist
@@ -17,7 +18,7 @@ def getFilteredFileList(filelist, filter):
 
     filterList = []
     tmpFilterList = filter.split('|')
-    #logger.debug (tmpFilterList)
+    # logger.debug (tmpFilterList)
     for it in tmpFilterList:
         if len(it) == 0:
             continue
@@ -34,24 +35,25 @@ def getFilteredFileList(filelist, filter):
             if it in fn:
                 filteredFile.append(f)
                 break
-    
+
     return filteredFile
+
 
 def getAndFilteredFileList(filelist, filter):
     logger = logging.getLogger('getfilelist')
-    logger.info (".")
+    logger.info(".")
 
     if len(filter) == 0:
         return filelist
 
     filterList = []
     tmpFilterList = filter.split('&')
-    print (tmpFilterList)
+    print(tmpFilterList)
     for it in tmpFilterList:
         if len(it) == 0:
             continue
         filterList.append(it.lower())
-    #logger.debug (filterList)
+    # logger.debug (filterList)
 
     if len(filterList) == 0:
         return filelist
@@ -66,32 +68,35 @@ def getAndFilteredFileList(filelist, filter):
                 isMatch = False
                 break
         if isMatch:
-            #logger.debug("Append: " + f)
+            # logger.debug("Append: " + f)
             filteredFile.append(f)
-    
+
     return filteredFile
+
 
 def getFileList(folders):
     logger = logging.getLogger('getfilelist')
-    logger.info (".")
     global isDebugMode
     folder_list = []
 
     for folder in folders:
         if os.path.exists(folder):
             if os.path.isfile(folder):
-                logger.debug ("File : " + folder)
+                logger.debug("File : " + folder)
                 folder_list.append(folder)
                 continue
 
             for (path, dir, files) in os.walk(folder):
                 for filename in files:
                     tf = os.path.join(path, filename)
-                    folder_list.append(tf)
+                    if "\\.git\\" not in tf:
+                        folder_list.append(tf)
         else:
-            logger.warning("Error:",folder," is not exist")
+            logger.warning("Error:", folder, " is not exist")
 
+    logger.info(len(folder_list))
     return folder_list
+
 
 def getPath(filename):
     ridx = filename.rfind('\\')
@@ -99,6 +104,15 @@ def getPath(filename):
         return filename
 
     return filename[:ridx]
+
+
+def get_filename(filename):
+    ridx = filename.rfind('\\')
+    if ridx == -1:
+        return filename
+
+    return filename[ridx+1:]
+
 
 def isSameFile(f1, f2):
     bufsize = LIMITED_SIZE
@@ -108,6 +122,7 @@ def isSameFile(f1, f2):
         if b1 != b2:
             return False
         return True
+
 
 def getHashValue(filepath):
     chunksize = LIMITED_SIZE
@@ -119,8 +134,9 @@ def getHashValue(filepath):
             buf = afile.read(chunksize)
             hash.update(buf)
 
-    retHash = hash.hexdigest() 
+    retHash = hash.hexdigest()
     return retHash
+
 
 def getMyHash(filepath):
     chunksize = 1024
@@ -133,5 +149,5 @@ def getMyHash(filepath):
         myHash = buf.decode('utf-8') + bound
     else:
         myHash = buf
-    print (myHash)
+    print(myHash)
     return myHash[0:1024]

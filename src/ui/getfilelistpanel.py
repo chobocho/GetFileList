@@ -5,7 +5,7 @@ import logging
 import subprocess
 import util.fileutil as fileutil
 
-WINDOW_SIZE = 640
+WINDOW_SIZE = 800
 BTN_SIZE = 50
 BTN_HEIGHT = 30
 
@@ -19,6 +19,7 @@ class GetFileListPanel(wx.Panel):
         self.filelist = []
         self.current_files = []
         self.chosenItem = ""
+        self.currentItem = -1
         self.SetDropTarget(filedrop)
         self._initUi()
 
@@ -69,11 +70,11 @@ class GetFileListPanel(wx.Panel):
         self.__OnDrawFilterBox(self.sizer)
         self.__OnDrawCtrlBox(self.sizer, font)
 
-        self.text = wx.TextCtrl(self, style = wx.TE_PROCESS_ENTER|wx.TE_READONLY|wx.TE_MULTILINE, size=(WINDOW_SIZE,WINDOW_SIZE))
-        self.text.SetValue("")
-        self.text.SetFont(font)
-        self.text.Show(False)
-        self.sizer.Add(self.text, 0, wx.EXPAND)
+        #self.text = wx.TextCtrl(self, style = wx.TE_PROCESS_ENTER|wx.TE_READONLY|wx.TE_MULTILINE, size=(WINDOW_SIZE,WINDOW_SIZE))
+        #self.text.SetValue("")
+        #self.text.SetFont(font)
+        #self.text.Show(False)
+        #self.sizer.Add(self.text, 0, wx.EXPAND)
         
         #btnBox = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -88,6 +89,21 @@ class GetFileListPanel(wx.Panel):
         #btnBox.Add(copyBtn, 1, wx.ALIGN_CENTRE|wx.ALL, 5)
 
         #self.sizer.Add(btnBox, 0, wx.ALL, 1)
+
+        statusBox = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.statusText = wx.TextCtrl(self, style = wx.TE_READONLY, size=(int(WINDOW_SIZE * 0.8), 30))
+        self.statusText.SetValue("")
+        self.statusText.SetFont(font)
+        statusBox.Add(self.statusText, 1, wx.ALIGN_LEFT, 1)
+
+        self.statusInfoText = wx.TextCtrl(self, style = wx.TE_READONLY, size=(int(WINDOW_SIZE * 0.2), 30))
+        self.statusInfoText.SetValue("")
+        self.statusInfoText.SetFont(font)
+        statusBox.Add(self.statusInfoText, 1, wx.ALIGN_LEFT, 1)
+
+        self.sizer.Add(statusBox, 0, wx.ALL, 1)
+
         self.SetSizer(self.sizer)
         self.SetAutoLayout(True)
 
@@ -150,6 +166,7 @@ class GetFileListPanel(wx.Panel):
         self.chosenItem = self.fileList.GetItem(index, 1).GetText()
         #self.logger.info(str(index) + ':' + chosenItem)
         print(self.chosenItem)
+        self.OnUpdateFilename(str(index+1) + ": " + fileutil.get_filename(self.chosenItem))
 
     def __OnRClicked(self, event):
         print("__OnRClicked")
@@ -167,10 +184,17 @@ class GetFileListPanel(wx.Panel):
         self.fileList.DeleteAllItems()
         for file in filelist:
             index = self.fileList.InsertItem(self.fileList.GetItemCount(), 1)
-            self.fileList.SetItem(index, 0, str(index))
+            self.fileList.SetItem(index, 0, str(index+1))
             self.fileList.SetItem(index, 1, file)
             if index % 2 == 0:
                 self.fileList.SetItemBackgroundColour(index, "Light blue")
-            if index > 10000:
-                print("Over than 10000", len(filelist))
+            if index > 20000:
+                err_msg = "Over than 20000"
+                print(err_msg, len(filelist))
+                self.statusText.SetValue(err_msg)
                 break
+
+        self.statusInfoText.SetValue("Count: " + str(index+1))
+
+    def OnUpdateFilename(self, filename):
+        self.statusText.SetValue(filename)

@@ -6,11 +6,11 @@ class ActionManager:
     def __init__(self):
         pass
 
-    def OnRunCommand(self, command, path=None):
+    def on_run_command(self, command, path=None):
         if command == 'ctrl_p':
             os.startfile('mspaint')
         elif command == 'ctrl_m':
             os.startfile('notepad')
         elif command == 'explore':
-            chosenItem = '"' + path + '"'
-            os.startfile(chosenItem)
+            chosen_item = '"' + path + '"'
+            os.startfile(chosen_item)

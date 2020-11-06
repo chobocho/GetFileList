@@ -1,7 +1,7 @@
 import os
 import util.fileutil
 
-class DoAction():
+class DoAction:
     def __init__(self):
         self.filelist = {}
         self.TAG = "DoAction"

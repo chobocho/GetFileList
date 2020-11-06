@@ -1,6 +1,7 @@
 import wx
 
-class GetFileListMenu():
+
+class GetFileListMenu:
     def __init__(self, parent):
         self.parent = parent
         self._addMenubar()
@@ -17,15 +18,15 @@ class GetFileListMenu():
         self.parent.Bind(wx.EVT_MENU, self.parent.OnQuit, quitItem)
         menubar.Append(fileMenu, '&File')
 
-        #editMenu = wx.Menu()
-        #findSameSizeItemId = wx.NewId()
-        #findSameSizeItem = editMenu.Append(findSameSizeItemId, 'Find same size', 'Find same size files')
-        #self.parent.Bind(wx.EVT_MENU, self.parent.OnFindSameSize, findSameSizeItem)
+        # editMenu = wx.Menu()
+        # findSameSizeItemId = wx.NewId()
+        # findSameSizeItem = editMenu.Append(findSameSizeItemId, 'Find same size', 'Find same size files')
+        # self.parent.Bind(wx.EVT_MENU, self.parent.OnFindSameSize, findSameSizeItem)
 
-        #findDuplicateItemId = wx.NewId()
-        #findDuplicateItem = editMenu.Append(findDuplicateItemId, 'Find duplicate', 'Find duplicate files')
-        #self.parent.Bind(wx.EVT_MENU, self.parent.OnFindDuplicate, findDuplicateItem)
-        #menubar.Append(editMenu, '&Edit')
+        # findDuplicateItemId = wx.NewId()
+        # findDuplicateItem = editMenu.Append(findDuplicateItemId, 'Find duplicate', 'Find duplicate files')
+        # self.parent.Bind(wx.EVT_MENU, self.parent.OnFindDuplicate, findDuplicateItem)
+        # menubar.Append(editMenu, '&Edit')
 
         helpMenu = wx.Menu()
         aboutItemId = wx.NewId()
