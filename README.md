@@ -9,8 +9,7 @@ Filter all files include 'Hello' or 'world'
 > Hello|world  
 
 Filter all files include 'Hello' and 'world'
-> &Hello&world  
-* And must start with '&'
+> Hello&world  
 
 Open file
 > Mouse Right Click

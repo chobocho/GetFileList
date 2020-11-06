@@ -182,6 +182,7 @@ class GetFileListPanel(wx.Panel):
     def OnUpdateList(self, filelist):
         self.logger.info('.')
         self.fileList.DeleteAllItems()
+        index = -1
         for file in filelist:
             index = self.fileList.InsertItem(self.fileList.GetItemCount(), 1)
             self.fileList.SetItem(index, 0, str(index+1))

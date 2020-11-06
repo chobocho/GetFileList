@@ -13,7 +13,7 @@ def getFilteredFileList(filelist, filter):
     if len(filter) == 0:
         return filelist
 
-    if filter[0] == '&':
+    if '&' in filter:
         return getAndFilteredFileList(filelist, filter)
 
     filterList = []
