@@ -8,6 +8,8 @@ class GetFileListMenu:
 
     def _addMenubar(self):
         menubar = wx.MenuBar()
+
+        ##
         fileMenu = wx.Menu()
 
         reloadItemmId = wx.NewId()
@@ -18,7 +20,16 @@ class GetFileListMenu:
         self.parent.Bind(wx.EVT_MENU, self.parent.OnQuit, quitItem)
         menubar.Append(fileMenu, '&File')
 
-        # editMenu = wx.Menu()
+        ##
+        viewMenu = wx.Menu()
+
+        show_filepath_id = wx.NewId()
+        self.show_filepath = viewMenu.AppendCheckItem(show_filepath_id, 'Show file path', 'Show file path')
+        self.parent.Bind(wx.EVT_MENU, self.parent.on_show_file_path, self.show_filepath)
+        self.show_filepath.Check(True)
+
+        menubar.Append(viewMenu, '&View')
+
         # findSameSizeItemId = wx.NewId()
         # findSameSizeItem = editMenu.Append(findSameSizeItemId, 'Find same size', 'Find same size files')
         # self.parent.Bind(wx.EVT_MENU, self.parent.OnFindSameSize, findSameSizeItem)
@@ -35,3 +46,12 @@ class GetFileListMenu:
         menubar.Append(helpMenu, '&Help')
 
         self.parent.SetMenuBar(menubar)
+
+    def is_show_menu(self):
+        return self.show_filepath.IsChecked() == True
+
+    def toggle_show_menu(self):
+        if self.show_filepath.IsChecked():
+            self.show_filepath.Check(False)
+        else:
+            self.show_filepath.Check(True)

@@ -20,12 +20,20 @@ class GetFileListPanel(wx.Panel):
         self.current_files = []
         self.chosenItem = ""
         self.currentItem = -1
+        self.is_show_file_path = True
         self.SetDropTarget(filedrop)
         self._initUi()
 
     def OnSetFilter(self, event):
+        self.__on_set_filter()
+
+    def __on_set_filter(self):
         self.filter = self.filterText.GetValue()
-        filteredFileList = self.doaction.getFilteredFileList(self.filter)
+        filteredFileList = []
+        if self.is_show_file_path:
+            filteredFileList = self.doaction.getFilteredFileList(self.filter)
+        else:
+            filteredFileList = self.doaction.get_filtered_filelist_without_path(self.filter)
         self._printFileList(filteredFileList)
 
     def OnClearFilter(self, event):
@@ -109,9 +117,16 @@ class GetFileListPanel(wx.Panel):
 
     def OnCallback(self, filelist):
         self.current_files = filelist
-        checkFileList = self.doaction.getFileList(filelist, self.filter)
+
+        checkFileList = []
+        if self.is_show_file_path:
+            checkFileList = self.doaction.getFileList(filelist, self.filter)
+        else:
+            checkFileList = self.doaction.get_file_list_without_path(filelist, self.filter)
+
         self.OnUpdateList(checkFileList)
         #self._printFileList(checkFileList)
+
 
     def _printFileList(self, files):
         print("_printFileList")
@@ -120,17 +135,32 @@ class GetFileListPanel(wx.Panel):
         #self.text.SetValue(fileList)
         self.OnUpdateList(files)
 
+
     def OnReload(self):
         print("Reload")
         self.chosenItem = ""
-        checkFileList = self.doaction.getFileList(self.current_files, self.filter)
+
+        checkFileList = []
+        if self.is_show_file_path:
+            checkFileList = self.doaction.getFileList(self.current_files, self.filter)
+        else:
+            checkFileList = self.doaction.get_file_list_without_path(self.current_files, self.filter)
+
         self.OnUpdateList(checkFileList)
+
+
+    def show_show_file_path(self, is_show_file_path):
+        self.is_show_file_path = is_show_file_path
+        self.__on_set_filter()
+
 
     def OnClearBtn(self, event):
         self.text.SetValue("")
-        
+
+
     def OnCopyBtn(self, event):
         self.OnCopyToClipboard()
+
 
     def OnCopyToClipboard(self):
         if len(self.chosenItem) == 0:
@@ -142,6 +172,7 @@ class GetFileListPanel(wx.Panel):
             wx.TheClipboard.SetData(wx.TextDataObject(self.chosenItem))
             wx.TheClipboard.Close()
 
+
     def OnGetChooseFilePath(self):
         if self.fileList.GetItemCount() == 0:
             return "c:/"
@@ -152,9 +183,11 @@ class GetFileListPanel(wx.Panel):
         print(chosenItem)
         return fileutil.getPath(chosenItem)
 
+
     def OnItemSelected(self, event):
         self.currentItem = event.Index
         self._OnItemSelected(self.currentItem)
+
 
     def _OnItemSelected(self, index):
         self.chosenItem = ""
@@ -165,8 +198,9 @@ class GetFileListPanel(wx.Panel):
             index = 0
         self.chosenItem = self.fileList.GetItem(index, 1).GetText()
         #self.logger.info(str(index) + ':' + chosenItem)
-        print(self.chosenItem)
+        #print(self.chosenItem)
         self.OnUpdateFilename(str(index+1) + ": " + fileutil.get_filename(self.chosenItem))
+
 
     def __OnRClicked(self, event):
         print("__OnRClicked")
@@ -178,6 +212,7 @@ class GetFileListPanel(wx.Panel):
             return
         chosenItem = '"' + self.chosenItem + '"'
         os.startfile(chosenItem)
+
 
     def OnUpdateList(self, filelist):
         self.logger.info('.')
@@ -196,6 +231,7 @@ class GetFileListPanel(wx.Panel):
                 break
 
         self.statusInfoText.SetValue("Count: " + str(index+1))
+
 
     def OnUpdateFilename(self, filename):
         self.statusText.SetValue(filename)

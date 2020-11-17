@@ -78,12 +78,14 @@ def getFileList(folders):
     logger = logging.getLogger('getfilelist')
     global isDebugMode
     folder_list = []
+    file_list = []
 
     for folder in folders:
         if os.path.exists(folder):
             if os.path.isfile(folder):
                 logger.debug("File : " + folder)
                 folder_list.append(folder)
+                file_list.append(folder)
                 continue
 
             for (path, dir, files) in os.walk(folder):
@@ -91,11 +93,12 @@ def getFileList(folders):
                     tf = os.path.join(path, filename)
                     if "\\.git\\" not in tf:
                         folder_list.append(tf)
+                        file_list.append(filename)
         else:
             logger.warning("Error:", folder, " is not exist")
 
-    logger.info(len(folder_list))
-    return folder_list
+    logger.info(str(len(folder_list)) + " " + str(len(file_list)))
+    return folder_list, file_list
 
 
 def getPath(filename):

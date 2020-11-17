@@ -28,6 +28,9 @@ class GetFileListFrame(wx.Frame):
         ctrl_D_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self._OnCtrl_D, id=ctrl_D_Id)
 
+        ctrl_H_Id = wx.NewIdRef()
+        self.Bind(wx.EVT_MENU, self._OnCtrl_H, id=ctrl_H_Id)
+
         ctrl_M_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self._OnCtrl_M, id=ctrl_M_Id)
 
@@ -39,6 +42,7 @@ class GetFileListFrame(wx.Frame):
 
         accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('C'), ctrl_C_Id),
                                          (wx.ACCEL_CTRL, ord('D'), ctrl_D_Id),
+                                         (wx.ACCEL_CTRL, ord('H'), ctrl_H_Id),
                                          (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
                                          (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
                                          (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id)])
@@ -57,6 +61,10 @@ class GetFileListFrame(wx.Frame):
         path = self.textPanel.OnGetChooseFilePath()
         self.action.on_run_command("explore", path)
 
+    def _OnCtrl_H(self, event):
+        self.menu.toggle_show_menu()
+        self.textPanel.show_show_file_path(self.menu.is_show_menu())
+
     def _OnCtrl_M(self, event):
         self.action.on_run_command("ctrl_m")
 
@@ -67,6 +75,10 @@ class GetFileListFrame(wx.Frame):
         msg = self.version + '\nhttp://chobocho.com'
         title = 'About'
         wx.MessageBox(msg, title, wx.OK | wx.ICON_INFORMATION)
+
+    def on_show_file_path(self, event):
+        self.textPanel.show_show_file_path(self.menu.is_show_menu())
+
 
 
 
