@@ -20,6 +20,9 @@ Copy the selected filename
 Open folder of selected file
 > Ctrl + D
 
+Toggle show/hide file path
+> Ctrl + H
+
 Open Notepad
 > Ctrl + M
 

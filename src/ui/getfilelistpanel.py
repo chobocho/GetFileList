@@ -31,9 +31,9 @@ class GetFileListPanel(wx.Panel):
         self.filter = self.filterText.GetValue()
         filteredFileList = []
         if self.is_show_file_path:
-            filteredFileList = self.doaction.getFilteredFileList(self.filter)
+            filteredFileList = self.doaction.getFilteredFileList(self.filter, self.on_update_progress_bar)
         else:
-            filteredFileList = self.doaction.get_filtered_filelist_without_path(self.filter)
+            filteredFileList = self.doaction.get_filtered_filelist_without_path(self.filter, self.on_update_progress_bar)
         self._printFileList(filteredFileList)
 
     def OnClearFilter(self, event):
@@ -116,17 +116,25 @@ class GetFileListPanel(wx.Panel):
         self.SetAutoLayout(True)
 
     def OnCallback(self, filelist):
+        self.progress_bar = wx.ProgressDialog("Load file list", "Please wait", maximum=100, parent=self, style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE)
         self.current_files = filelist
-
         checkFileList = []
         if self.is_show_file_path:
-            checkFileList = self.doaction.getFileList(filelist, self.filter)
+            checkFileList = self.doaction.getFileList(filelist, self.filter, self.on_update_progress_bar)
         else:
-            checkFileList = self.doaction.get_file_list_without_path(filelist, self.filter)
+            checkFileList = self.doaction.get_file_list_without_path(filelist, self.filter, self.on_update_progress_bar)
 
+        self.on_update_progress_bar(99)
         self.OnUpdateList(checkFileList)
+        self.on_update_progress_bar(100)
+        self.progress_bar.Destroy()
+        self.progress_bar = None
         #self._printFileList(checkFileList)
 
+    def on_update_progress_bar(self, progress):
+        if None == self.progress_bar:
+            return
+        self.progress_bar.Update(progress, str(progress) + "% done!")
 
     def _printFileList(self, files):
         print("_printFileList")

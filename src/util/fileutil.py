@@ -6,7 +6,7 @@ isDebugMode = False
 LIMITED_SIZE = 65536
 
 
-def getFilteredFileList(filelist, filter):
+def getFilteredFileList(filelist, filter, callback=None):
     logger = logging.getLogger('getfilelist')
     logger.info(".")
 
@@ -14,7 +14,7 @@ def getFilteredFileList(filelist, filter):
         return filelist
 
     if '&' in filter:
-        return getAndFilteredFileList(filelist, filter)
+        return getAndFilteredFileList(filelist, filter, callback)
 
     filterList = []
     tmpFilterList = filter.split('|')
@@ -27,7 +27,13 @@ def getFilteredFileList(filelist, filter):
     if len(filterList) == 0:
         return filelist
 
+    if None != callback:
+        callback(72)
     filteredFile = []
+
+    tick = 0
+    progress = 72
+    gap = int(len(filelist)/28)
 
     for f in filelist:
         fn = f.lower()
@@ -35,11 +41,17 @@ def getFilteredFileList(filelist, filter):
             if it in fn:
                 filteredFile.append(f)
                 break
+        tick+=1
+        if tick >= gap:
+            tick = 0
+            if (None != callback) and (progress < 99):
+                progress += 1
+                callback(progress)
 
     return filteredFile
 
 
-def getAndFilteredFileList(filelist, filter):
+def getAndFilteredFileList(filelist, filter, callback=None):
     logger = logging.getLogger('getfilelist')
     logger.info(".")
 
@@ -58,6 +70,12 @@ def getAndFilteredFileList(filelist, filter):
     if len(filterList) == 0:
         return filelist
 
+    if None != callback:
+        callback(72)
+    tick = 0
+    progress = 72
+    gap = int(len(filelist)/28)
+
     filteredFile = []
 
     for f in filelist:
@@ -71,14 +89,24 @@ def getAndFilteredFileList(filelist, filter):
             # logger.debug("Append: " + f)
             filteredFile.append(f)
 
+        tick += 1
+        if tick >= gap:
+            tick = 0
+            if (None != callback) and (progress < 99):
+                progress += 1
+                callback(progress)
+
     return filteredFile
 
 
-def getFileList(folders):
+def getFileList(folders, callback=None):
     logger = logging.getLogger('getfilelist')
     global isDebugMode
     folder_list = []
     file_list = []
+    tick = 0
+    progress = 0
+    gap = 200
 
     for folder in folders:
         if os.path.exists(folder):
@@ -94,6 +122,13 @@ def getFileList(folders):
                     if "\\.git\\" not in tf:
                         folder_list.append(tf)
                         file_list.append(filename)
+
+                    tick += 1
+                    if tick > gap:
+                        tick = 0
+                        if (None != callback) and (progress < 70):
+                            progress += 1
+                            callback(progress)
         else:
             logger.warning("Error:", folder, " is not exist")
 
