@@ -189,3 +189,14 @@ def getMyHash(filepath):
         myHash = buf
     print(myHash)
     return myHash[0:1024]
+
+
+def delete(filename):
+    if not os.path.exists(filename):
+        return
+
+    try:
+        os.remove(filename)
+        print("File delete success!")
+    except OSError as error:
+        print("File: ", error)

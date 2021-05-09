@@ -34,6 +34,9 @@ class GetFileListFrame(wx.Frame):
         ctrl_M_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self._OnCtrl_M, id=ctrl_M_Id)
 
+        ctrl_O_Id = wx.NewIdRef()
+        self.Bind(wx.EVT_MENU, self._OnCtrl_O, id=ctrl_O_Id)
+
         ctrl_P_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self._OnCtrl_P, id=ctrl_P_Id)
 
@@ -44,6 +47,7 @@ class GetFileListFrame(wx.Frame):
                                          (wx.ACCEL_CTRL, ord('D'), ctrl_D_Id),
                                          (wx.ACCEL_CTRL, ord('H'), ctrl_H_Id),
                                          (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
+                                         (wx.ACCEL_CTRL, ord('O'), ctrl_O_Id),
                                          (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
                                          (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id)])
         self.SetAcceleratorTable(accel_tbl)
@@ -58,8 +62,18 @@ class GetFileListFrame(wx.Frame):
         self.textPanel.OnCopyToClipboard()
 
     def _OnCtrl_D(self, event):
-        path = self.textPanel.OnGetChooseFilePath()
-        self.action.on_run_command("explore", path)
+        filename = self.textPanel.OnGetChooseFile()
+        if filename == None:
+            return
+
+        title = 'Do you want to delete'
+        msg = '> ' + filename
+
+        askDeleteDialog = wx.MessageDialog(None, msg, title, wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+        if askDeleteDialog.ShowModal() == wx.ID_YES:
+            self.action.on_run_command("delete", filename)
+            self.textPanel.OnReload()
+        askDeleteDialog.Destroy()
 
     def _OnCtrl_H(self, event):
         self.menu.toggle_show_menu()
@@ -67,6 +81,10 @@ class GetFileListFrame(wx.Frame):
 
     def _OnCtrl_M(self, event):
         self.action.on_run_command("ctrl_m")
+
+    def _OnCtrl_O(self, event):
+        path = self.textPanel.OnGetChooseFilePath()
+        self.action.on_run_command("explore", path)
 
     def _OnCtrl_P(self, event):
         self.action.on_run_command("ctrl_p")

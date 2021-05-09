@@ -192,6 +192,17 @@ class GetFileListPanel(wx.Panel):
         return fileutil.getPath(chosenItem)
 
 
+    def OnGetChooseFile(self):
+        if self.fileList.GetItemCount() == 0:
+            return None
+        index = self.currentItem
+        if index < 0:
+            index = 0
+        chosenItem = self.fileList.GetItem(index, 1).GetText()
+        # print(chosenItem)
+        return chosenItem
+
+
     def OnItemSelected(self, event):
         self.currentItem = event.Index
         self._OnItemSelected(self.currentItem)

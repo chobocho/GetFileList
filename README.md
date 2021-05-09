@@ -14,10 +14,10 @@ Filter all files include 'Hello' and 'world'
 Open file
 > Mouse Right Click
 
-Copy the selected filename
+Copy a selected filename
 > Ctrl + C
 
-Open folder of selected file
+Delete a selected filename
 > Ctrl + D
 
 Toggle show/hide file path
@@ -25,6 +25,9 @@ Toggle show/hide file path
 
 Open Notepad
 > Ctrl + M
+
+Open folder of selected file
+> Ctrl + O
 
 Open MsPaint
 > Ctrl + P
