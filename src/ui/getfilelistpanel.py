@@ -254,3 +254,6 @@ class GetFileListPanel(wx.Panel):
 
     def OnUpdateFilename(self, filename):
         self.statusText.SetValue(filename)
+
+    def OnSaveAsExcel(self):
+        self.doaction.OnSaveAsExcel()

@@ -55,6 +55,9 @@ class GetFileListFrame(wx.Frame):
     def OnQuit(self, event):
         self.Close()
 
+    def OnSaveAsExcel(self, event):
+        self.textPanel.OnSaveAsExcel()
+
     def OnReload(self, event):
         self.textPanel.OnReload()
 

@@ -13,7 +13,7 @@ def getFilteredFileList(filelist, filter, callback=None):
     if len(filter) == 0:
         return filelist
 
-    if '&' in filter:
+    if ',' in filter:
         return getAndFilteredFileList(filelist, filter, callback)
 
     filterList = []
@@ -59,7 +59,7 @@ def getAndFilteredFileList(filelist, filter, callback=None):
         return filelist
 
     filterList = []
-    tmpFilterList = filter.split('&')
+    tmpFilterList = filter.split(',')
     print(tmpFilterList)
     for it in tmpFilterList:
         if len(it) == 0:
