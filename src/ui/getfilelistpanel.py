@@ -174,10 +174,16 @@ class GetFileListPanel(wx.Panel):
         if len(self.chosenItem) == 0:
             return
 
-        print("C2C: " + self.chosenItem)
-            
+        chosenItemCount = self.fileList.GetSelectedItemCount()
+        nextItem = self.fileList.GetFirstSelected()
+
+        selectedItemList = []
+        for _ in range(chosenItemCount):
+            selectedItemList.append(self.fileList.GetItem(nextItem, 1).GetText())
+            nextItem = self.fileList.GetNextItem(nextItem)
+
         if wx.TheClipboard.Open():
-            wx.TheClipboard.SetData(wx.TextDataObject(self.chosenItem))
+            wx.TheClipboard.SetData(wx.TextDataObject('\n'.join(selectedItemList)))
             wx.TheClipboard.Close()
 
 
