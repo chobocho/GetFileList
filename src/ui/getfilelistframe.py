@@ -3,13 +3,14 @@ from ui.getfilelistpanel import *
 from ui.menu import *
 from manager import ActionManager
 
+
 class GetFileListFrame(wx.Frame):
     def __init__(self, *args, version, **kw):
         super(GetFileListFrame, self).__init__(*args, **kw)
         self.textPanel = GetFileListPanel(self)
         self.version = version
         self.action = ActionManager.ActionManager()
-        
+
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.textPanel, 1, wx.EXPAND)
 
@@ -43,13 +44,23 @@ class GetFileListFrame(wx.Frame):
         ctrl_Q_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self.OnQuit, id=ctrl_Q_Id)
 
-        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('C'), ctrl_C_Id),
-                                         (wx.ACCEL_CTRL, ord('D'), ctrl_D_Id),
-                                         (wx.ACCEL_CTRL, ord('H'), ctrl_H_Id),
-                                         (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
-                                         (wx.ACCEL_CTRL, ord('O'), ctrl_O_Id),
-                                         (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
-                                         (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id)])
+        alt_D_Id = wx.NewIdRef()
+        self.Bind(wx.EVT_MENU, self._OnFocusFilter, id=alt_D_Id)
+
+        alt_C_Id = wx.NewIdRef()
+        self.Bind(wx.EVT_MENU, self._OnClearFilter, id=alt_C_Id)
+
+        accel_tbl = wx.AcceleratorTable([
+            (wx.ACCEL_ALT, ord('C'), alt_C_Id),
+            (wx.ACCEL_ALT, ord('D'), alt_D_Id),
+            (wx.ACCEL_CTRL, ord('C'), ctrl_C_Id),
+            (wx.ACCEL_CTRL, ord('D'), ctrl_D_Id),
+            (wx.ACCEL_CTRL, ord('H'), ctrl_H_Id),
+            (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
+            (wx.ACCEL_CTRL, ord('O'), ctrl_O_Id),
+            (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
+            (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id)
+        ])
         self.SetAcceleratorTable(accel_tbl)
 
     def OnQuit(self, event):
@@ -92,6 +103,12 @@ class GetFileListFrame(wx.Frame):
     def _OnCtrl_P(self, event):
         self.action.on_run_command("ctrl_p")
 
+    def _OnFocusFilter(self, event):
+        self.textPanel.OnFocusFilter()
+
+    def _OnClearFilter(self, event):
+        self.textPanel.OnClearFilter()
+
     def OnAbout(self, event):
         msg = self.version + '\nhttp://chobocho.com'
         title = 'About'
@@ -99,7 +116,3 @@ class GetFileListFrame(wx.Frame):
 
     def on_show_file_path(self, event):
         self.textPanel.show_show_file_path(self.menu.is_show_menu())
-
-
-
-
