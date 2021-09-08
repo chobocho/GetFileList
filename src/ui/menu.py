@@ -25,13 +25,23 @@ class GetFileListMenu:
     def _add_viewmenu(self, menubar):
         viewMenu = wx.Menu()
         show_filepath_id = wx.NewId()
-        self.show_filepath = viewMenu.AppendCheckItem(show_filepath_id, '%Show file path', 'Show file path')
+        self.show_filepath = viewMenu.AppendCheckItem(show_filepath_id, '&Show file path', 'Show file path')
         self.parent.Bind(wx.EVT_MENU, self.parent.on_show_file_path, self.show_filepath)
         self.show_filepath.Check(True)
+
+        show_foler_info_id = wx.NewId()
+        self.show_foler_info = viewMenu.AppendCheckItem(show_foler_info_id, 'Show folder &info', 'Show folder info')
+        self.parent.Bind(wx.EVT_MENU, self.parent.on_show_folder_info, self.show_foler_info)
+        self.show_foler_info.Check(True)
         menubar.Append(viewMenu, '&View')
 
     def _add_filemenu(self, menubar):
         fileMenu = wx.Menu()
+
+        save_foler_info_id = wx.NewId()
+        self.save_foler_info = fileMenu.AppendCheckItem(save_foler_info_id, 'Save folder &info', 'Save folder info')
+        self.parent.Bind(wx.EVT_MENU, self.parent.save_foler_info, self.save_foler_info)
+        self.save_foler_info.Check(True)
 
         saveFilelistId = wx.NewId()
         saveFilelist = fileMenu.Append(saveFilelistId, '&Save as Excel', 'Save as Excel')
@@ -54,3 +64,10 @@ class GetFileListMenu:
             self.show_filepath.Check(False)
         else:
             self.show_filepath.Check(True)
+
+    def is_show_folder_info_menu(self):
+        return self.show_foler_info.IsChecked() is True
+
+    def is_save_folder_info_menu(self):
+        return self.save_foler_info.IsChecked() is True
+

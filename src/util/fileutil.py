@@ -1,6 +1,7 @@
 import os
 import hashlib
 import logging
+import json
 
 isDebugMode = False
 LIMITED_SIZE = 65536
@@ -200,3 +201,41 @@ def delete(filename):
         print("File delete success!")
     except OSError as error:
         print("File: ", error)
+
+
+def load_cfg(filename=""):
+    logger = logging.getLogger('getfilelist')
+
+    if len(filename) == 0:
+        return []
+
+    if not os.path.exists(filename):
+        logger.info(f"CFG({filename}) is not exist!")
+        return []
+
+    json_data = {}
+    try:
+        with open(filename) as json_file:
+            json_data = json.load(json_file)
+    except:
+        logger.info("Error to load CFG file")
+
+    raw_folder_info = json_data.get('folder_info', [])
+    folder_info = []
+    for f in raw_folder_info:
+        if os.path.exists(f):
+            folder_info.append(f)
+
+    return folder_info
+
+
+def save_cfg(folder_info, filename=""):
+    logger = logging.getLogger('getfilelist')
+    print(folder_info)
+
+    save_data = {'folder_info': folder_info}
+    try:
+        with open(filename, 'w') as jsonfile:
+            json.dump(save_data, jsonfile, indent=2)
+    except:
+        logger.info("Error to SAVE CFG file")

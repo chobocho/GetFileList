@@ -22,6 +22,9 @@ class GetFileListPanel(wx.Panel):
         self.chosenItem = ""
         self.currentItem = -1
         self.is_show_file_path = True
+        self.is_show_foler_info = True
+        self.is_save_folder_info = True
+        self.progress_bar = None
         self.SetDropTarget(filedrop)
         self._initUi()
 
@@ -46,9 +49,17 @@ class GetFileListPanel(wx.Panel):
         self.filter = []
         self._printFileList(self.doaction.getFileList())
 
+    def __onDrawFoldInfoBox(self, sizer):
+        folderInfoBox = wx.BoxSizer(wx.HORIZONTAL)
+        self.folderInfoText = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY, size=(WINDOW_SIZE-20, BTN_HEIGHT * 3))
+        self.folderInfoText.SetValue("")
+        folderInfoBox.Add(self.folderInfoText, 1, wx.ALIGN_LEFT | wx.ALL, 1)
+        sizer.Add(folderInfoBox, 0, wx.ALIGN_LEFT, 5)
+
+
     def __OnDrawFilterBox(self, sizer):
         filterBox = wx.BoxSizer(wx.HORIZONTAL)
-        self.filterText = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(WINDOW_SIZE - BTN_SIZE * 2, BTN_HEIGHT))
+        self.filterText = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(WINDOW_SIZE - BTN_SIZE, BTN_HEIGHT))
         self.filterText.Bind(wx.EVT_TEXT_ENTER, self.OnSetFilter)
         self.filterText.SetValue("")
         filterBox.Add(self.filterText, 1, wx.ALIGN_LEFT | wx.ALL, 1)
@@ -80,6 +91,7 @@ class GetFileListPanel(wx.Panel):
         font = wx.Font(12, wx.FONTFAMILY_TELETYPE, wx.NORMAL, wx.NORMAL)
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.__onDrawFoldInfoBox(self.sizer)
         self.__OnDrawFilterBox(self.sizer)
         self.__OnDrawCtrlBox(self.sizer, font)
 
@@ -104,6 +116,7 @@ class GetFileListPanel(wx.Panel):
         self.progress_bar = wx.ProgressDialog("Load file list", "Please wait", maximum=100, parent=self,
                                               style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE)
         self.current_files = filelist
+        self.update_folder_info()
         checkFileList = []
         if self.is_show_file_path:
             checkFileList = self.doaction.getFileList(filelist, self.filter, self.on_update_progress_bar)
@@ -116,6 +129,15 @@ class GetFileListPanel(wx.Panel):
         self.progress_bar.Destroy()
         self.progress_bar = None
         # self._printFileList(checkFileList)
+        self.on_save_current_folder()
+
+    def on_save_current_folder(self):
+        self.logger.info(".")
+        if not self.is_save_folder_info:
+            self.logger.info(f'Save option : {self.is_save_folder_info}')
+            fileutil.save_cfg([], "./getfilelist.cfg")
+        else:
+            fileutil.save_cfg(self.current_files, "./getfilelist.cfg")
 
     def on_update_progress_bar(self, progress):
         if None == self.progress_bar:
@@ -141,9 +163,17 @@ class GetFileListPanel(wx.Panel):
 
         self.OnUpdateList(checkFileList)
 
-    def show_show_file_path(self, is_show_file_path):
+    def show_file_path(self, is_show_file_path):
         self.is_show_file_path = is_show_file_path
         self.__on_set_filter()
+
+    def show_folder_info(self, is_show_foler_info):
+        self.is_show_foler_info = is_show_foler_info
+        if self.is_show_foler_info:
+            self.folderInfoText.Show()
+        else:
+            self.folderInfoText.Hide()
+        self.Layout()
 
     def OnClearBtn(self, event):
         self.text.SetValue("")
@@ -245,3 +275,10 @@ class GetFileListPanel(wx.Panel):
 
     def OnFocusFilter(self):
         self.filterText.SetFocus()
+
+    def update_folder_info(self):
+        self.folderInfoText.SetValue('\n'.join(self.current_files))
+
+    def save_folder_info(self, is_save_folder_info):
+        self.is_save_folder_info = is_save_folder_info
+        self.logger.info(self.is_save_folder_info)

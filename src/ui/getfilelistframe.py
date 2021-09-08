@@ -2,11 +2,12 @@ import wx
 from ui.getfilelistpanel import *
 from ui.menu import *
 from manager import ActionManager
-
+import logging
 
 class GetFileListFrame(wx.Frame):
     def __init__(self, *args, version, **kw):
         super(GetFileListFrame, self).__init__(*args, **kw)
+        self.logger = logging.getLogger('getfilelist')
         self.textPanel = GetFileListPanel(self)
         self.version = version
         self.action = ActionManager.ActionManager()
@@ -18,6 +19,7 @@ class GetFileListFrame(wx.Frame):
         self.SetAutoLayout(True)
         self._addMenubar()
         self._addShortKey()
+        self.on_load_previous_folder_info()
 
     def _addMenubar(self):
         self.menu = GetFileListMenu(self)
@@ -115,4 +117,16 @@ class GetFileListFrame(wx.Frame):
         wx.MessageBox(msg, title, wx.OK | wx.ICON_INFORMATION)
 
     def on_show_file_path(self, event):
-        self.textPanel.show_show_file_path(self.menu.is_show_menu())
+        self.textPanel.show_file_path(self.menu.is_show_menu())
+
+    def on_show_folder_info(self, event):
+        self.textPanel.show_folder_info(self.menu.is_show_folder_info_menu())
+
+    def on_load_previous_folder_info(self):
+        self.logger.info(".")
+        filelist = fileutil.load_cfg("./getfilelist.cfg")
+        if len(filelist) > 0:
+            self.textPanel.OnCallback(filelist)
+
+    def save_foler_info(self, event):
+        self.textPanel.save_folder_info(self.menu.is_save_folder_info_menu())
