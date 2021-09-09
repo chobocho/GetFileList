@@ -13,11 +13,11 @@ class DoAction:
     def Println(self, *msg):
         print(self.TAG, " ", msg)
 
-    def getFileList(self, folername="", filter=[], callback=None):
+    def getFileList(self, folername=[], filter=[], callback=None):
         self.Println("getFileList")
 
         if len(folername) == 0:
-            return self.filelist
+            return []
 
         if None != callback:
             callback(1)
@@ -36,11 +36,11 @@ class DoAction:
     def get_filtered_filelist_without_path(self, filter, callback=None):
         return util.fileutil.getFilteredFileList(self.filelist_without_path, filter, callback)
 
-    def get_file_list_without_path(self, foldername="", filter=[], callback=None):
+    def get_file_list_without_path(self, foldername=[], filter=[], callback=None):
         self.Println("get_file_list_withou_path")
 
         if len(foldername) == 0:
-            return self.filelist_without_path
+            return []
 
         self.filelist, self.filelist_without_path = util.fileutil.getFileList(foldername, callback)
 
@@ -58,3 +58,7 @@ class DoAction:
 
         excelManager = ExcelManager()
         excelManager.saveData(self.filelist)
+
+
+    def OnReset(self):
+        self.filelist = {}

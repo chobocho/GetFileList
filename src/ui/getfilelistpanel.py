@@ -51,9 +51,20 @@ class GetFileListPanel(wx.Panel):
 
     def __onDrawFoldInfoBox(self, sizer):
         folderInfoBox = wx.BoxSizer(wx.HORIZONTAL)
-        self.folderInfoText = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY, size=(WINDOW_SIZE-20, BTN_HEIGHT * 3))
+        self.folderInfoText = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY, size=(WINDOW_SIZE-BTN_SIZE*2, BTN_HEIGHT*2))
         self.folderInfoText.SetValue("")
         folderInfoBox.Add(self.folderInfoText, 1, wx.ALIGN_LEFT | wx.ALL, 1)
+
+        addFolderBtnId = wx.NewId()
+        self.addFolderBtn = wx.Button(self, addFolderBtnId, "&Add", size=(BTN_SIZE, 30))
+        self.addFolderBtn.Bind(wx.EVT_BUTTON, self._OnAddFolder)
+        folderInfoBox.Add(self.addFolderBtn, 0, wx.ALIGN_CENTRE | wx.LEFT, 1)
+
+        resetBtnId = wx.NewId()
+        self.resetBtn = wx.Button(self, resetBtnId, "&Reset", size=(BTN_SIZE, 30))
+        self.resetBtn.Bind(wx.EVT_BUTTON, self._OnReset)
+        folderInfoBox.Add(self.resetBtn, 0, wx.ALIGN_CENTRE | wx.LEFT, 1)
+
         sizer.Add(folderInfoBox, 0, wx.ALIGN_LEFT, 5)
 
 
@@ -171,8 +182,12 @@ class GetFileListPanel(wx.Panel):
         self.is_show_foler_info = is_show_foler_info
         if self.is_show_foler_info:
             self.folderInfoText.Show()
+            self.addFolderBtn.Show()
+            self.resetBtn.Show()
         else:
             self.folderInfoText.Hide()
+            self.addFolderBtn.Hide()
+            self.resetBtn.Hide()
         self.Layout()
 
     def OnClearBtn(self, event):
@@ -250,7 +265,7 @@ class GetFileListPanel(wx.Panel):
         os.startfile(chosenItem)
 
     def OnUpdateList(self, filelist):
-        self.logger.info('.')
+        self.logger.info(len(filelist))
         self.fileList.DeleteAllItems()
         index = -1
         for file in filelist:
@@ -282,3 +297,25 @@ class GetFileListPanel(wx.Panel):
     def save_folder_info(self, is_save_folder_info):
         self.is_save_folder_info = is_save_folder_info
         self.logger.info(self.is_save_folder_info)
+
+    def _OnReset(self, event):
+        self.OnCallback([])
+        self.doaction.OnReset()
+
+    def _OnAddFolder(self, event):
+        newFolder = ""
+        dlg = wx.DirDialog (None, "Choose directory", "",
+                            wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
+        if dlg.ShowModal() == wx.ID_OK:
+            newFolder = dlg.GetPath()
+        dlg.Destroy()
+
+        if len(newFolder) == 0:
+            return
+
+        if newFolder in self.current_files:
+            return
+
+        self.current_files.append(newFolder)
+        self.OnCallback(self.current_files)
+
