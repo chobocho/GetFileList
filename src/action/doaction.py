@@ -13,17 +13,19 @@ class DoAction:
     def Println(self, *msg):
         print(self.TAG, " ", msg)
 
-    def getFileList(self, folername=[], filter=[], callback=None):
+    def getFileList(self, folername=None, filter=None, callback=None):
         self.Println("getFileList")
 
-        if len(folername) == 0:
+        if folername is None:
+            if (filter is None) and len(self.filelist) > 0:
+                return self.filelist
             return []
 
         if None != callback:
             callback(1)
         self.filelist, self.filelist_without_path = util.fileutil.getFileList(folername, callback)
 
-        if len(filter) == 0:
+        if filter is None:
             return self.filelist
 
         if None != callback:

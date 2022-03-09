@@ -1,9 +1,12 @@
 import os
+import wx
+
 from util.filedrop import *
 from action.doaction import *
 import logging
 import subprocess
 import util.fileutil as fileutil
+
 
 WINDOW_SIZE = 800
 BTN_SIZE = 50
@@ -28,32 +31,32 @@ class GetFileListPanel(wx.Panel):
         self.SetDropTarget(filedrop)
         self._initUi()
 
-    def OnSetFilter(self, event):
+    def on_set_filter(self, event):
         self.__on_set_filter()
 
     def __on_set_filter(self):
-        self.filter = self.filterText.GetValue()
-        filteredFileList = []
+        self.filter = self.filter_text.GetValue()
+        filtered_file_list = []
         if self.is_show_file_path:
-            filteredFileList = self.doaction.getFilteredFileList(self.filter, self.on_update_progress_bar)
+            filtered_file_list = self.doaction.getFilteredFileList(self.filter, self.on_update_progress_bar)
         else:
-            filteredFileList = self.doaction.get_filtered_filelist_without_path(self.filter,
+            filtered_file_list = self.doaction.get_filtered_filelist_without_path(self.filter,
                                                                                 self.on_update_progress_bar)
-        self._printFileList(filteredFileList)
+        self._printFileList(filtered_file_list)
 
-    def _OnClearFilter(self, event):
+    def _on_clear_filter(self, event):
         self.OnClearFilter()
 
     def OnClearFilter(self):
-        self.filterText.SetValue("")
+        self.filter_text.SetValue("")
         self.filter = []
         self._printFileList(self.doaction.getFileList())
 
-    def __onDrawFoldInfoBox(self, sizer):
+    def _on_draw_fold_info_box(self, sizer):
         folderInfoBox = wx.BoxSizer(wx.HORIZONTAL)
         self.folderInfoText = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY, size=(WINDOW_SIZE-BTN_SIZE*2, BTN_HEIGHT*2))
         self.folderInfoText.SetValue("")
-        folderInfoBox.Add(self.folderInfoText, 1, wx.ALIGN_LEFT | wx.ALL, 1)
+        folderInfoBox.Add(self.folderInfoText, 1, wx.EXPAND, 1)
 
         addFolderBtnId = wx.NewId()
         self.addFolderBtn = wx.Button(self, addFolderBtnId, "&Add", size=(BTN_SIZE, 30))
@@ -65,45 +68,45 @@ class GetFileListPanel(wx.Panel):
         self.resetBtn.Bind(wx.EVT_BUTTON, self._OnReset)
         folderInfoBox.Add(self.resetBtn, 0, wx.ALIGN_CENTRE | wx.LEFT, 1)
 
-        sizer.Add(folderInfoBox, 0, wx.ALIGN_LEFT, 5)
+        sizer.Add(folderInfoBox, 0, wx.EXPAND, 1)
 
+    def _on_draw_filter_box(self, sizer):
+        filter_box = wx.BoxSizer(wx.HORIZONTAL)
+        self.filter_text = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(WINDOW_SIZE - BTN_SIZE, BTN_HEIGHT))
+        self.filter_text.Bind(wx.EVT_TEXT_ENTER, self.on_set_filter)
+        self.filter_text.SetValue("")
+        self.filter_text.SetHint("Alt+D: Focus here! / Alt+C: Clear here!")
+        filter_box.Add(self.filter_text, 1, wx.EXPAND, 1)
 
-    def __OnDrawFilterBox(self, sizer):
-        filterBox = wx.BoxSizer(wx.HORIZONTAL)
-        self.filterText = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(WINDOW_SIZE - BTN_SIZE, BTN_HEIGHT))
-        self.filterText.Bind(wx.EVT_TEXT_ENTER, self.OnSetFilter)
-        self.filterText.SetValue("")
-        filterBox.Add(self.filterText, 1, wx.ALIGN_LEFT | wx.ALL, 1)
+        clear_btn_id = wx.NewId()
+        clear_btn = wx.Button(self, clear_btn_id, "&Clear", size=(BTN_SIZE, 30))
+        clear_btn.Bind(wx.EVT_BUTTON, self._on_clear_filter)
+        filter_box.Add(clear_btn, 0, wx.ALIGN_CENTRE | wx.LEFT, 1)
 
-        clearBtnId = wx.NewId()
-        clearBtn = wx.Button(self, clearBtnId, "&Clear", size=(BTN_SIZE, 30))
-        clearBtn.Bind(wx.EVT_BUTTON, self._OnClearFilter)
-        filterBox.Add(clearBtn, 0, wx.ALIGN_CENTRE | wx.LEFT, 1)
-
-        sizer.Add(filterBox, 0, wx.ALIGN_LEFT, 5)
+        sizer.Add(filter_box, 0, wx.EXPAND, 1)
 
     def __OnDrawCtrlBox(self, sizer, font):
         fileListID = wx.NewId()
-        self.fileList = wx.ListCtrl(self, fileListID,
-                                    style=wx.LC_REPORT
+        self.file_list_ctrl = wx.ListCtrl(self, fileListID,
+                                          style=wx.LC_REPORT
                                           | wx.BORDER_NONE
                                           | wx.LC_EDIT_LABELS
-                                    )
-        self.sizer.Add(self.fileList, 1, wx.EXPAND)
+                                          )
+        self.sizer.Add(self.file_list_ctrl, 1, wx.EXPAND)
 
-        self.fileList.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
-        self.fileList.Bind(wx.EVT_LEFT_DCLICK, self.__OnDoubleClicked)
-        self.fileList.InsertColumn(0, "No", width=40)
-        self.fileList.InsertColumn(1, "File name", width=WINDOW_SIZE - 60)
-        self.fileList.SetFont(font)
+        self.file_list_ctrl.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
+        self.file_list_ctrl.Bind(wx.EVT_LEFT_DCLICK, self.__OnDoubleClicked)
+        self.file_list_ctrl.InsertColumn(0, "No", width=40)
+        self.file_list_ctrl.InsertColumn(1, "File name", width=WINDOW_SIZE - 60)
+        self.file_list_ctrl.SetFont(font)
         self.currentItem = -1
 
     def _initUi(self):
         font = wx.Font(12, wx.FONTFAMILY_TELETYPE, wx.NORMAL, wx.NORMAL)
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.__onDrawFoldInfoBox(self.sizer)
-        self.__OnDrawFilterBox(self.sizer)
+        self._on_draw_fold_info_box(self.sizer)
+        self._on_draw_filter_box(self.sizer)
         self.__OnDrawCtrlBox(self.sizer, font)
 
         statusBox = wx.BoxSizer(wx.HORIZONTAL)
@@ -151,7 +154,7 @@ class GetFileListPanel(wx.Panel):
             fileutil.save_cfg(self.current_files, "./getfilelist.cfg")
 
     def on_update_progress_bar(self, progress):
-        if None == self.progress_bar:
+        if self.progress_bar is None:
             return
         self.progress_bar.Update(progress, str(progress) + "% done!")
 
@@ -166,13 +169,13 @@ class GetFileListPanel(wx.Panel):
         print("Reload")
         self.chosenItem = ""
 
-        checkFileList = []
+        check_file_list = []
         if self.is_show_file_path:
-            checkFileList = self.doaction.getFileList(self.current_files, self.filter)
+            check_file_list = self.doaction.getFileList(self.current_files, self.filter)
         else:
-            checkFileList = self.doaction.get_file_list_without_path(self.current_files, self.filter)
+            check_file_list = self.doaction.get_file_list_without_path(self.current_files, self.filter)
 
-        self.OnUpdateList(checkFileList)
+        self.OnUpdateList(check_file_list)
 
     def show_file_path(self, is_show_file_path):
         self.is_show_file_path = is_show_file_path
@@ -200,35 +203,35 @@ class GetFileListPanel(wx.Panel):
         if len(self.chosenItem) == 0:
             return
 
-        chosenItemCount = self.fileList.GetSelectedItemCount()
-        nextItem = self.fileList.GetFirstSelected()
+        chosenItemCount = self.file_list_ctrl.GetSelectedItemCount()
+        nextItem = self.file_list_ctrl.GetFirstSelected()
 
         selectedItemList = []
         for _ in range(chosenItemCount):
-            selectedItemList.append(self.fileList.GetItem(nextItem, 1).GetText())
-            nextItem = self.fileList.GetNextItem(nextItem)
+            selectedItemList.append(self.file_list_ctrl.GetItem(nextItem, 1).GetText())
+            nextItem = self.file_list_ctrl.GetNextItem(nextItem)
 
         if wx.TheClipboard.Open():
             wx.TheClipboard.SetData(wx.TextDataObject('\n'.join(selectedItemList)))
             wx.TheClipboard.Close()
 
     def OnGetChooseFilePath(self):
-        if self.fileList.GetItemCount() == 0:
+        if self.file_list_ctrl.GetItemCount() == 0:
             return "c:/"
         index = self.currentItem
         if index < 0:
             index = 0
-        chosenItem = self.fileList.GetItem(index, 1).GetText()
+        chosenItem = self.file_list_ctrl.GetItem(index, 1).GetText()
         print(chosenItem)
         return fileutil.getPath(chosenItem)
 
     def OnGetChooseFile(self):
-        if self.fileList.GetItemCount() == 0:
+        if self.file_list_ctrl.GetItemCount() == 0:
             return None
         index = self.currentItem
         if index < 0:
             index = 0
-        chosenItem = self.fileList.GetItem(index, 1).GetText()
+        chosenItem = self.file_list_ctrl.GetItem(index, 1).GetText()
         # print(chosenItem)
         return chosenItem
 
@@ -238,22 +241,22 @@ class GetFileListPanel(wx.Panel):
 
     def _OnItemSelected(self, index):
         self.chosenItem = ""
-        if self.fileList.GetItemCount() == 0:
+        if self.file_list_ctrl.GetItemCount() == 0:
             self.logger.info("List is empty!")
             return
         if index < 0:
             index = 0
-        self.chosenItem = self.fileList.GetItem(index, 1).GetText()
+        self.chosenItem = self.file_list_ctrl.GetItem(index, 1).GetText()
         # self.logger.info(str(index) + ':' + chosenItem)
         # print(self.chosenItem)
         self.OnUpdateFilename(str(index + 1) + ": " + fileutil.get_filename(self.chosenItem))
 
     def __OnDoubleClicked(self, event):
         print("__OnDoubleClicked")
-        if self.fileList.GetItemCount() == 0:
+        if self.file_list_ctrl.GetItemCount() == 0:
             return
 
-        if (self.currentItem < 0) or (self.currentItem >= self.fileList.GetItemCount()):
+        if (self.currentItem < 0) or (self.currentItem >= self.file_list_ctrl.GetItemCount()):
             return
 
         self._OnItemSelected(self.currentItem)
@@ -266,14 +269,14 @@ class GetFileListPanel(wx.Panel):
 
     def OnUpdateList(self, filelist):
         self.logger.info(len(filelist))
-        self.fileList.DeleteAllItems()
+        self.file_list_ctrl.DeleteAllItems()
         index = -1
         for file in filelist:
-            index = self.fileList.InsertItem(self.fileList.GetItemCount(), 1)
-            self.fileList.SetItem(index, 0, str(index + 1))
-            self.fileList.SetItem(index, 1, file)
+            index = self.file_list_ctrl.InsertItem(self.file_list_ctrl.GetItemCount(), 1)
+            self.file_list_ctrl.SetItem(index, 0, str(index + 1))
+            self.file_list_ctrl.SetItem(index, 1, file)
             if index % 2 == 0:
-                self.fileList.SetItemBackgroundColour(index, "Light blue")
+                self.file_list_ctrl.SetItemBackgroundColour(index, "Light blue")
             if index > 20000:
                 err_msg = "Over than 20000"
                 print(err_msg, len(filelist))
@@ -289,7 +292,7 @@ class GetFileListPanel(wx.Panel):
         self.doaction.OnSaveAsExcel()
 
     def OnFocusFilter(self):
-        self.filterText.SetFocus()
+        self.filter_text.SetFocus()
 
     def update_folder_info(self):
         self.folderInfoText.SetValue('\n'.join(self.current_files))
