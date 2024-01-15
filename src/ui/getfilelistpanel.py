@@ -29,6 +29,7 @@ class GetFileListPanel(wx.Panel):
         self.is_save_folder_info = True
         self.progress_bar = None
         self.SetDropTarget(filedrop)
+        self.is_resized = False
         self._initUi()
 
     def on_set_filter(self, event):
@@ -97,7 +98,7 @@ class GetFileListPanel(wx.Panel):
         self.file_list_ctrl.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
         self.file_list_ctrl.Bind(wx.EVT_LEFT_DCLICK, self.__OnDoubleClicked)
         self.file_list_ctrl.InsertColumn(0, "No", width=40)
-        self.file_list_ctrl.InsertColumn(1, "File name", width=WINDOW_SIZE - 60)
+        self.file_list_ctrl.InsertColumn(1, "File name", width=WINDOW_SIZE - 40)
         self.file_list_ctrl.SetFont(font)
         self.currentItem = -1
 
@@ -125,6 +126,9 @@ class GetFileListPanel(wx.Panel):
 
         self.SetSizer(self.sizer)
         self.SetAutoLayout(True)
+
+        self.Bind(wx.EVT_SIZE, self.on_resize)
+        self.Bind(wx.EVT_IDLE, self.on_idle)
 
     def OnCallback(self, filelist):
         self.progress_bar = wx.ProgressDialog("Load file list", "Please wait", maximum=100, parent=self,
@@ -322,3 +326,11 @@ class GetFileListPanel(wx.Panel):
         self.current_files.append(newFolder)
         self.OnCallback(self.current_files)
 
+    def on_resize(self, event):
+        self.is_resized = True
+
+    def on_idle(self, event):
+        if self.is_resized:
+            self.file_list_ctrl.SetColumnWidth(1, self.GetSize()[0] - 40)
+            self.Layout()
+            self.is_resized = False
