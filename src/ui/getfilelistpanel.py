@@ -4,7 +4,6 @@ import wx
 from util.filedrop import *
 from action.doaction import *
 import logging
-import subprocess
 import util.fileutil as fileutil
 
 
@@ -76,7 +75,7 @@ class GetFileListPanel(wx.Panel):
         self.filter_text = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER, size=(WINDOW_SIZE - BTN_SIZE, BTN_HEIGHT))
         self.filter_text.Bind(wx.EVT_TEXT_ENTER, self.on_set_filter)
         self.filter_text.SetValue("")
-        self.filter_text.SetHint("Alt+D: Focus here! / Alt+C: Clear here!")
+        self.filter_text.SetHint("Alt+D, Ctrl+F: Focus here! / Alt+C: Clear here!")
         filter_box.Add(self.filter_text, 1, wx.EXPAND, 1)
 
         clear_btn_id = wx.NewId()
