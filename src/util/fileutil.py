@@ -1,7 +1,8 @@
-import os
 import hashlib
-import logging
 import json
+import logging
+import os
+from util.common import get_chosung
 
 isDebugMode = False
 LIMITED_SIZE = 65536
@@ -134,7 +135,13 @@ def getFileList(folders, callback=None):
             logger.warning("Error:", folder, " is not exist")
 
     logger.info(str(len(folder_list)) + " " + str(len(file_list)))
-    return folder_list, file_list
+
+    file_info = {}
+    file_info['chosung_folder'] = [get_chosung(f) for f in folder_list]
+    file_info['chosung_file'] = [get_chosung(f) for f in file_list]
+    file_info['folder'] = folder_list
+    file_info['file'] = file_list
+    return file_info
 
 
 def getPath(filename):

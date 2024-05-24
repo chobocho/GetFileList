@@ -7,28 +7,31 @@ class DoAction:
     def __init__(self):
         self.filelist = {}
         self.filelist_without_path = {}
+        self.file_info = {}
         self.TAG = "DoAction"
         pass
 
-    def Println(self, *msg):
+    def println(self, *msg):
         print(self.TAG, " ", msg)
 
     def getFileList(self, folername=None, filter=None, callback=None):
-        self.Println("getFileList")
+        self.println("getFileList")
 
         if folername is None:
             if (filter is None) and len(self.filelist) > 0:
                 return self.filelist
             return []
 
-        if None != callback:
+        if None is not callback:
             callback(1)
-        self.filelist, self.filelist_without_path = util.fileutil.getFileList(folername, callback)
+        self.file_info = util.fileutil.getFileList(folername, callback)
+        self.filelist = self.file_info['folder']
+        self.filelist_without_path = self.file_info['file']
 
         if filter is None:
             return self.filelist
 
-        if None != callback:
+        if None is not callback:
             callback(71)
         return self.getFilteredFileList(filter, callback)
 
@@ -39,12 +42,14 @@ class DoAction:
         return util.fileutil.getFilteredFileList(self.filelist_without_path, filter, callback)
 
     def get_file_list_without_path(self, foldername=[], filter=[], callback=None):
-        self.Println("get_file_list_withou_path")
+        self.println("get_file_list_withou_path")
 
         if len(foldername) == 0:
             return []
 
-        self.filelist, self.filelist_without_path = util.fileutil.getFileList(foldername, callback)
+        self.file_info = util.fileutil.getFileList(foldername, callback)
+        self.filelist = self.file_info['folder']
+        self.filelist_without_path = self.file_info['file']
 
         if len(filter) == 0:
             return self.filelist_without_path

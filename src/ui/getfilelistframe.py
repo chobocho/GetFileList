@@ -94,7 +94,7 @@ class GetFileListFrame(wx.Frame):
 
     def _OnCtrl_H(self, event):
         self.menu.toggle_show_menu()
-        self.textPanel.show_show_file_path(self.menu.is_show_menu())
+        self.textPanel.show_file_path(self.menu.is_show_menu())
 
     def _OnCtrl_M(self, event):
         self.action.on_run_command("ctrl_m")
