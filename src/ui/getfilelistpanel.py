@@ -280,8 +280,8 @@ class GetFileListPanel(wx.Panel):
             self.file_list_ctrl.SetItem(index, 1, file)
             if index % 2 == 0:
                 self.file_list_ctrl.SetItemBackgroundColour(index, "Light blue")
-            if index > 20000:
-                err_msg = "Over than 20000"
+            if index > 1000:
+                err_msg = "Over than 1000"
                 print(err_msg, len(filelist))
                 self.statusText.SetValue(err_msg)
                 break
