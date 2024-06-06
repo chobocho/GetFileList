@@ -6,8 +6,9 @@ from action.doaction import *
 import logging
 import util.fileutil as fileutil
 
+MAX_VIEW_COUNT = 200
 
-WINDOW_SIZE = 800
+WINDOW_SIZE = 840
 BTN_SIZE = 50
 BTN_HEIGHT = 30
 
@@ -38,19 +39,19 @@ class GetFileListPanel(wx.Panel):
         self.filter = self.filter_text.GetValue()
         filtered_file_list = []
         if self.is_show_file_path:
-            filtered_file_list = self.doaction.getFilteredFileList(self.filter, self.on_update_progress_bar)
+            filtered_file_list = self.doaction.get_filtered_file_list(self.filter, self.on_update_progress_bar)
         else:
             filtered_file_list = self.doaction.get_filtered_filelist_without_path(self.filter,
                                                                                 self.on_update_progress_bar)
         self._printFileList(filtered_file_list)
 
     def _on_clear_filter(self, event):
-        self.OnClearFilter()
+        self.on_clear_filter()
 
-    def OnClearFilter(self):
+    def on_clear_filter(self):
         self.filter_text.SetValue("")
         self.filter = []
-        self._printFileList(self.doaction.getFileList())
+        self._printFileList(self.doaction.get_file_list())
 
     def _on_draw_fold_info_box(self, sizer):
         folderInfoBox = wx.BoxSizer(wx.HORIZONTAL)
@@ -136,7 +137,7 @@ class GetFileListPanel(wx.Panel):
         self.update_folder_info()
         checkFileList = []
         if self.is_show_file_path:
-            checkFileList = self.doaction.getFileList(filelist, self.filter, self.on_update_progress_bar)
+            checkFileList = self.doaction.get_file_list(filelist, self.filter, self.on_update_progress_bar)
         else:
             checkFileList = self.doaction.get_file_list_without_path(filelist, self.filter, self.on_update_progress_bar)
 
@@ -174,7 +175,7 @@ class GetFileListPanel(wx.Panel):
 
         check_file_list = []
         if self.is_show_file_path:
-            check_file_list = self.doaction.getFileList(self.current_files, self.filter)
+            check_file_list = self.doaction.get_file_list(self.current_files, self.filter)
         else:
             check_file_list = self.doaction.get_file_list_without_path(self.current_files, self.filter)
 
@@ -226,7 +227,7 @@ class GetFileListPanel(wx.Panel):
             index = 0
         chosenItem = self.file_list_ctrl.GetItem(index, 1).GetText()
         print(chosenItem)
-        return fileutil.getPath(chosenItem)
+        return fileutil.get_path(chosenItem)
 
     def OnGetChooseFile(self):
         if self.file_list_ctrl.GetItemCount() == 0:
@@ -280,13 +281,13 @@ class GetFileListPanel(wx.Panel):
             self.file_list_ctrl.SetItem(index, 1, file)
             if index % 2 == 0:
                 self.file_list_ctrl.SetItemBackgroundColour(index, "Light blue")
-            if index > 1000:
-                err_msg = "Over than 1000"
+            if index > MAX_VIEW_COUNT:
+                err_msg = f"Only display {MAX_VIEW_COUNT} files"
                 print(err_msg, len(filelist))
                 self.statusText.SetValue(err_msg)
                 break
 
-        self.statusInfoText.SetValue("Count: " + str(index + 1))
+        self.statusInfoText.SetValue(f"Total Count: {len(filelist)}")
 
     def OnUpdateFilename(self, filename):
         self.statusText.SetValue(filename)
@@ -305,8 +306,14 @@ class GetFileListPanel(wx.Panel):
         self.logger.info(self.is_save_folder_info)
 
     def _OnReset(self, event):
-        self.OnCallback([])
-        self.doaction.OnReset()
+        title = "GetFileList"
+        msg = 'Do you want to Reset?'
+
+        ask_reset_dialog = wx.MessageDialog(None, msg, title, wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+        if ask_reset_dialog.ShowModal() == wx.ID_YES:
+            self.OnCallback([])
+            self.doaction.OnReset()
+        ask_reset_dialog.Destroy()
 
     def _OnAddFolder(self, event):
         newFolder = ""

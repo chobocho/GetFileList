@@ -8,100 +8,122 @@ isDebugMode = False
 LIMITED_SIZE = 65536
 
 
-def getFilteredFileList(filelist, filter, callback=None):
+def get_filtered_file_list(fileinfo, filter, callback=None):
     logger = logging.getLogger('getfilelist')
     logger.info(".")
 
     if len(filter) == 0:
-        return filelist
+        return fileinfo['folder']
 
     if ',' in filter:
-        return getAndFilteredFileList(filelist, filter, callback)
+        return get_and_filtered_file_list(fileinfo['folder'], filter, callback)
 
-    filterList = []
-    tmpFilterList = filter.split('|')
+    filter_list = []
+    tmp_filter_list = filter.split('|')
     # logger.debug (tmpFilterList)
-    for it in tmpFilterList:
+    for it in tmp_filter_list:
         if len(it) == 0:
             continue
-        filterList.append(it.lower())
+        filter_list.append(it.lower().strip())
 
-    if len(filterList) == 0:
-        return filelist
+    if len(filter_list) == 0:
+        return fileinfo['folder']
 
-    if None != callback:
+    if None is not callback:
         callback(72)
-    filteredFile = []
+    filtered_file = []
 
     tick = 0
     progress = 72
-    gap = int(len(filelist)/28)
+    gap = int(len(fileinfo['folder']) / 28)
 
-    for f in filelist:
+    progress, tick = search_folder(callback, fileinfo, filter_list, filtered_file, gap, progress, tick, 90)
+    chosung_search(callback, fileinfo, filter_list, filtered_file, gap, progress, tick, 99)
+    return filtered_file
+
+
+def search_folder(callback, fileinfo, filter_list, filtered_file, gap, progress, tick, max_progress):
+    for f in fileinfo['folder']:
         fn = f.lower()
-        for it in filterList:
+        for it in filter_list:
             if it in fn:
-                filteredFile.append(f)
+                filtered_file.append(f)
                 break
-        tick+=1
+        tick += 1
         if tick >= gap:
             tick = 0
-            if (None != callback) and (progress < 99):
+            if (None is not callback) and (progress < max_progress):
                 progress += 1
                 callback(progress)
+    return progress, tick
 
-    return filteredFile
+
+def chosung_search(callback, fileinfo, filter_list, filtered_file, gap, progress, tick, max_progress):
+    for i in range(len(fileinfo['chosung_folder'])):
+        f = fileinfo['chosung_folder'][i]
+        fn = f.lower()
+        for it in filter_list:
+            if it in fn:
+                filtered_file.append(fileinfo['folder'][i])
+                break
+        tick += 1
+        if tick >= gap:
+            tick = 0
+            if (None is not callback) and (progress < max_progress):
+                progress += 1
+                callback(progress)
+    return progress, tick
 
 
-def getAndFilteredFileList(filelist, filter, callback=None):
+def get_and_filtered_file_list(filelist, filter, callback=None):
     logger = logging.getLogger('getfilelist')
     logger.info(".")
 
     if len(filter) == 0:
         return filelist
 
-    filterList = []
-    tmpFilterList = filter.split(',')
-    print(tmpFilterList)
-    for it in tmpFilterList:
+    filter_list = []
+    tmp_filter_list = filter.split(',')
+    print(tmp_filter_list)
+    for it in tmp_filter_list:
         if len(it) == 0:
             continue
-        filterList.append(it.lower())
+        filter_list.append(it.lower().strip())
     # logger.debug (filterList)
 
-    if len(filterList) == 0:
+    if len(filter_list) == 0:
         return filelist
 
-    if None != callback:
+    if None is not callback:
         callback(72)
     tick = 0
     progress = 72
     gap = int(len(filelist)/28)
 
-    filteredFile = []
+    filtered_file = []
 
     for f in filelist:
         fn = f.lower()
-        isMatch = True
-        for it in filterList:
+        is_match = True
+        for it in filter_list:
             if it not in fn:
-                isMatch = False
+                is_match = False
                 break
-        if isMatch:
+        if is_match:
             # logger.debug("Append: " + f)
-            filteredFile.append(f)
+            filtered_file.append(f)
 
         tick += 1
         if tick >= gap:
             tick = 0
-            if (None != callback) and (progress < 99):
+            if (None is not callback) and (progress < 99):
                 progress += 1
                 callback(progress)
 
-    return filteredFile
+    return filtered_file
 
 
-def getFileList(folders, callback=None):
+def get_file_list(folders, callback=None):
     logger = logging.getLogger('getfilelist')
     global isDebugMode
     folder_list = []
@@ -144,7 +166,7 @@ def getFileList(folders, callback=None):
     return file_info
 
 
-def getPath(filename):
+def get_path(filename):
     ridx = filename.rfind('\\')
     if ridx == -1:
         return filename

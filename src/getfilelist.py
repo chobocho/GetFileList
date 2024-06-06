@@ -3,7 +3,7 @@ import logging
 import logging.handlers
 from buildinfo.info import *
 
-WINDOW_SIZE = 800
+WINDOW_SIZE = 840
 MAX_LOG_SIZE = 512 * 1024
 
 def initLogger():

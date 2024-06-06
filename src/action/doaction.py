@@ -14,32 +14,32 @@ class DoAction:
     def println(self, *msg):
         print(self.TAG, " ", msg)
 
-    def getFileList(self, folername=None, filter=None, callback=None):
+    def get_file_list(self, foler_name=None, filters=None, callback=None):
         self.println("getFileList")
 
-        if folername is None:
-            if (filter is None) and len(self.filelist) > 0:
+        if foler_name is None:
+            if (filters is None) and len(self.filelist) > 0:
                 return self.filelist
             return []
 
         if None is not callback:
             callback(1)
-        self.file_info = util.fileutil.getFileList(folername, callback)
+        self.file_info = util.fileutil.get_file_list(foler_name, callback)
         self.filelist = self.file_info['folder']
         self.filelist_without_path = self.file_info['file']
 
-        if filter is None:
+        if filters is None:
             return self.filelist
 
         if None is not callback:
             callback(71)
-        return self.getFilteredFileList(filter, callback)
+        return self.get_filtered_file_list(filters, callback)
 
-    def getFilteredFileList(self, filter, callback=None):
-        return util.fileutil.getFilteredFileList(self.filelist, filter, callback)
+    def get_filtered_file_list(self, filters, callback=None):
+        return util.fileutil.get_filtered_file_list(self.file_info, filters, callback)
 
     def get_filtered_filelist_without_path(self, filter, callback=None):
-        return util.fileutil.getFilteredFileList(self.filelist_without_path, filter, callback)
+        return util.fileutil.get_filtered_file_list(self.filelist_without_path, filter, callback)
 
     def get_file_list_without_path(self, foldername=[], filter=[], callback=None):
         self.println("get_file_list_withou_path")
@@ -47,7 +47,7 @@ class DoAction:
         if len(foldername) == 0:
             return []
 
-        self.file_info = util.fileutil.getFileList(foldername, callback)
+        self.file_info = util.fileutil.get_file_list(foldername, callback)
         self.filelist = self.file_info['folder']
         self.filelist_without_path = self.file_info['file']
 

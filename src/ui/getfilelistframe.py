@@ -1,4 +1,5 @@
 import wx
+import os
 from ui.getfilelistpanel import *
 from ui.menu import *
 from manager import ActionManager
@@ -46,6 +47,9 @@ class GetFileListFrame(wx.Frame):
         ctrl_Q_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self.OnQuit, id=ctrl_Q_Id)
 
+        rename_id = wx.NewIdRef()
+        self.Bind(wx.EVT_MENU, self._on_rename, id=rename_id)
+
         focus_on_search_box_id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self._OnFocusFilter, id=focus_on_search_box_id)
 
@@ -62,7 +66,8 @@ class GetFileListFrame(wx.Frame):
             (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
             (wx.ACCEL_CTRL, ord('O'), ctrl_O_Id),
             (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
-            (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id)
+            (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id),
+            (wx.ACCEL_SHIFT, wx.WXK_F6, rename_id)
         ])
         self.SetAcceleratorTable(accel_tbl)
 
@@ -80,7 +85,7 @@ class GetFileListFrame(wx.Frame):
 
     def _OnCtrl_D(self, event):
         filename = self.textPanel.OnGetChooseFile()
-        if filename == None:
+        if filename is None:
             return
 
         title = 'Do you want to delete'
@@ -106,11 +111,34 @@ class GetFileListFrame(wx.Frame):
     def _OnCtrl_P(self, event):
         self.action.on_run_command("ctrl_p")
 
+    def _on_rename(self, event):
+        file_name = self.textPanel.OnGetChooseFile()
+        file_path = self.textPanel.OnGetChooseFilePath()
+        if file_name is None or file_path is None:
+            return
+
+        title = 'Input new file name'
+        file_name_only = os.path.basename(file_name)
+        msg = f'{file_path}\\\n  {file_name_only}'
+
+        rename_dialog = wx.TextEntryDialog(None, msg, title, style = wx.OK|wx.CANCEL)
+        rename_dialog.SetValue(file_name_only)
+        rename_dialog.SetMaxLength(128)
+        new_file_name = ""
+        if rename_dialog.ShowModal() == wx.ID_OK:
+            new_file_name = rename_dialog.GetValue()
+        rename_dialog.Destroy()
+
+        if len(new_file_name) == 0:
+            return
+        if self.action.on_rename(file_name, os.path.join(file_path, new_file_name)):
+            self.textPanel.OnReload()
+
     def _OnFocusFilter(self, event):
         self.textPanel.OnFocusFilter()
 
     def _OnClearFilter(self, event):
-        self.textPanel.OnClearFilter()
+        self.textPanel.on_clear_filter()
 
     def OnAbout(self, event):
         msg = self.version + '\nhttp://chobocho.com'
