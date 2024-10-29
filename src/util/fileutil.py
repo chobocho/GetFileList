@@ -131,8 +131,12 @@ def get_file_list(folders, callback=None):
     tick = 0
     progress = 0
     gap = 200
+    max_file_size = 50_000
 
     for folder in folders:
+        if len(file_list) > max_file_size:
+            break
+
         if os.path.exists(folder):
             if os.path.isfile(folder):
                 logger.debug("File : " + folder)
@@ -141,7 +145,11 @@ def get_file_list(folders, callback=None):
                 continue
 
             for (path, dir, files) in os.walk(folder):
+                if len(file_list) > max_file_size:
+                    break
                 for filename in files:
+                    if len(file_list) > max_file_size:
+                       break
                     tf = os.path.join(path, filename)
                     if "\\.git\\" not in tf:
                         folder_list.append(tf)

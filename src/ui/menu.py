@@ -24,10 +24,11 @@ class GetFileListMenu:
 
     def _add_viewmenu(self, menubar):
         viewMenu = wx.Menu()
-        show_filepath_id = wx.NewId()
-        self.show_filepath = viewMenu.AppendCheckItem(show_filepath_id, '&Show file path', 'Show file path')
-        self.parent.Bind(wx.EVT_MENU, self.parent.on_show_file_path, self.show_filepath)
-        self.show_filepath.Check(True)
+        # TODO fix this code
+        # show_filepath_id = wx.NewId()
+        # self.show_filepath = viewMenu.AppendCheckItem(show_filepath_id, '&Show file path', 'Show file path')
+        # self.parent.Bind(wx.EVT_MENU, self.parent.on_show_file_path, self.show_filepath)
+        # self.show_filepath.Check(True)
 
         show_foler_info_id = wx.NewId()
         self.show_foler_info = viewMenu.AppendCheckItem(show_foler_info_id, 'Show folder &info', 'Show folder info')

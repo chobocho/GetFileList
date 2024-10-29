@@ -32,8 +32,8 @@ class GetFileListFrame(wx.Frame):
         ctrl_D_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self._OnCtrl_D, id=ctrl_D_Id)
 
-        ctrl_H_Id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self._OnCtrl_H, id=ctrl_H_Id)
+        # ctrl_H_Id = wx.NewIdRef()
+        # self.Bind(wx.EVT_MENU, self._OnCtrl_H, id=ctrl_H_Id)
 
         ctrl_M_Id = wx.NewIdRef()
         self.Bind(wx.EVT_MENU, self._OnCtrl_M, id=ctrl_M_Id)
@@ -62,7 +62,7 @@ class GetFileListFrame(wx.Frame):
             (wx.ACCEL_CTRL, ord('C'), ctrl_C_Id),
             (wx.ACCEL_CTRL, ord('D'), ctrl_D_Id),
             (wx.ACCEL_CTRL, ord('F'), focus_on_search_box_id),
-            (wx.ACCEL_CTRL, ord('H'), ctrl_H_Id),
+            # (wx.ACCEL_CTRL, ord('H'), ctrl_H_Id),
             (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
             (wx.ACCEL_CTRL, ord('O'), ctrl_O_Id),
             (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
