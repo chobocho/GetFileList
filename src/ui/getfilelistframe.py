@@ -60,13 +60,13 @@ class GetFileListFrame(wx.Frame):
             (wx.ACCEL_ALT, ord('C'), alt_C_Id),
             (wx.ACCEL_ALT, ord('D'), focus_on_search_box_id),
             (wx.ACCEL_CTRL, ord('C'), ctrl_C_Id),
-            (wx.ACCEL_CTRL, ord('D'), ctrl_D_Id),
             (wx.ACCEL_CTRL, ord('F'), focus_on_search_box_id),
             # (wx.ACCEL_CTRL, ord('H'), ctrl_H_Id),
             (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
             (wx.ACCEL_CTRL, ord('O'), ctrl_O_Id),
             (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
             (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id),
+            (wx.ACCEL_CTRL | wx.ACCEL_ALT, ord('D'), ctrl_D_Id),
             (wx.ACCEL_SHIFT, wx.WXK_F6, rename_id)
         ])
         self.SetAcceleratorTable(accel_tbl)

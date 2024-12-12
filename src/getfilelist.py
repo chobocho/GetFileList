@@ -6,7 +6,7 @@ from buildinfo.info import *
 WINDOW_SIZE = 840
 MAX_LOG_SIZE = 512 * 1024
 
-def initLogger():
+def init_logger():
     logger = logging.getLogger('getfilelist')
     logger.setLevel(logging.DEBUG)
 
@@ -24,17 +24,17 @@ def initLogger():
     
     logger.info("=== " + SW_TITLE + " ===")
 
-def printEnd():
+def print_end():
     logger = logging.getLogger('getfilelist')
     logger.info("=== END ===")
 
 def main(): 
-    initLogger()
+    init_logger()
     app = wx.App()
     frm = GetFileListFrame(None, version= SW_TITLE, title=SW_TITLE, size=(WINDOW_SIZE,WINDOW_SIZE))
     frm.Show()
     app.MainLoop()
-    printEnd()
+    print_end()
 
 if __name__ == '__main__':
     main()
