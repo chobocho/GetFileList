@@ -226,7 +226,7 @@ class GetFileListPanel(wx.Panel):
         if index < 0:
             index = 0
         chosenItem = self.file_list_ctrl.GetItem(index, 1).GetText()
-        print(chosenItem)
+        # print(chosenItem)
         return fileutil.get_path(chosenItem)
 
     def OnGetChooseFile(self):

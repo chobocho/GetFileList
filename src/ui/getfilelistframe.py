@@ -26,43 +26,24 @@ class GetFileListFrame(wx.Frame):
         self.menu = GetFileListMenu(self)
 
     def _addShortKey(self):
-        ctrl_C_Id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self.OnCopyToClipboard, id=ctrl_C_Id)
-
-        ctrl_D_Id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self._OnCtrl_D, id=ctrl_D_Id)
-
-        # ctrl_H_Id = wx.NewIdRef()
-        # self.Bind(wx.EVT_MENU, self._OnCtrl_H, id=ctrl_H_Id)
-
-        ctrl_M_Id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self._OnCtrl_M, id=ctrl_M_Id)
-
-        ctrl_O_Id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self._OnCtrl_O, id=ctrl_O_Id)
-
-        ctrl_P_Id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self._OnCtrl_P, id=ctrl_P_Id)
-
-        ctrl_Q_Id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self.OnQuit, id=ctrl_Q_Id)
-
-        rename_id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self._on_rename, id=rename_id)
-
-        focus_on_search_box_id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self._OnFocusFilter, id=focus_on_search_box_id)
-
-        alt_C_Id = wx.NewIdRef()
-        self.Bind(wx.EVT_MENU, self._OnClearFilter, id=alt_C_Id)
+        self.Bind(wx.EVT_MENU, self.OnCopyToClipboard, id=(ctrl_C_Id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self._OnCtrl_D, id=(ctrl_D_Id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self._OnCtrl_M, id=(ctrl_M_Id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self._OnCtrl_O, id=(ctrl_O_Id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self._OnCtrl_P, id=(ctrl_P_Id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self.OnQuit, id=(ctrl_Q_Id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self._on_rename, id=(rename_id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self._OnFocusFilter, id=(focus_on_search_box_id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self._OnClearFilter, id=(alt_C_Id := wx.NewIdRef()))
+        self.Bind(wx.EVT_MENU, self.on_display_file_size, id=(display_file_size_id := wx.NewIdRef()))
 
         accel_tbl = wx.AcceleratorTable([
             (wx.ACCEL_ALT, ord('C'), alt_C_Id),
             (wx.ACCEL_ALT, ord('D'), focus_on_search_box_id),
             (wx.ACCEL_CTRL, ord('C'), ctrl_C_Id),
             (wx.ACCEL_CTRL, ord('F'), focus_on_search_box_id),
-            # (wx.ACCEL_CTRL, ord('H'), ctrl_H_Id),
             (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
+            (wx.ACCEL_CTRL, ord('L'), display_file_size_id),
             (wx.ACCEL_CTRL, ord('O'), ctrl_O_Id),
             (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
             (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id),
@@ -139,6 +120,24 @@ class GetFileListFrame(wx.Frame):
 
     def _OnClearFilter(self, event):
         self.textPanel.on_clear_filter()
+
+    def on_display_file_size(self, event):
+        file_name = self.textPanel.OnGetChooseFile()
+        file_path = self.textPanel.OnGetChooseFilePath()
+
+        if file_name is None or file_path is None:
+            return
+
+        title = file_path
+        file_name_only = os.path.basename(file_name)
+
+        file_size = os.path.getsize(file_name)
+        msg = f'\n{file_name_only}\n\n' \
+              f'{file_size / (1000 * 1000 * 1000):,.2f} GB\n' \
+              f'\n{file_size / (1000 * 1000):,.1f} MB\n\n' \
+              f'{file_size // 1000:,} KB\n' \
+              f'{file_size:,} Bytes\n'
+        wx.MessageBox(msg, title, wx.OK | wx.ICON_INFORMATION)
 
     def OnAbout(self, event):
         msg = self.version + '\nhttp://chobocho.com'
