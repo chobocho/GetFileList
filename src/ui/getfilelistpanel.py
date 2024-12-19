@@ -14,8 +14,8 @@ BTN_HEIGHT = 30
 
 
 class GetFileListPanel(wx.Panel):
-    def __init__(self, *args, **kw):
-        super(GetFileListPanel, self).__init__(*args, **kw)
+    def __init__(self, parent, tab_idx = 0, frame = None,  *args, **kw):
+        super(GetFileListPanel, self).__init__(parent, *args, **kw)
         filedrop = FileDrop(self)
         self.logger = logging.getLogger('getfilelist')
         self.doaction = DoAction()
@@ -25,12 +25,21 @@ class GetFileListPanel(wx.Panel):
         self.chosenItem = ""
         self.currentItem = -1
         self.is_show_file_path = True
-        self.is_show_foler_info = True
+        self.is_show_folder_info = True
         self.is_save_folder_info = True
         self.progress_bar = None
         self.SetDropTarget(filedrop)
         self.is_resized = False
+        self.tab_idx = tab_idx
+        self.is_load_folder_info = False
+        self.parent = frame
         self._initUi()
+
+    def load_folder_info(self):
+        return self.is_load_folder_info
+
+    def show_folder_info_menu(self):
+        return self.is_show_folder_info
 
     def on_set_filter(self, event):
         self.__on_set_filter()
@@ -148,14 +157,19 @@ class GetFileListPanel(wx.Panel):
         self.progress_bar = None
         # self._printFileList(checkFileList)
         self.on_save_current_folder()
+        self.is_load_folder_info = True
+
+        tab_name = os.path.basename(filelist[0]) if len(filelist) > 0 else "_EMPTY_"
+        self.parent.update_notebook(self.tab_idx, tab_name)
 
     def on_save_current_folder(self):
         self.logger.info(".")
+        save_file_path = f"./getfilelist{self.tab_idx}.cfg"
         if not self.is_save_folder_info:
             self.logger.info(f'Save option : {self.is_save_folder_info}')
-            fileutil.save_cfg([], "./getfilelist.cfg")
+            fileutil.save_cfg([], save_file_path)
         else:
-            fileutil.save_cfg(self.current_files, "./getfilelist.cfg")
+            fileutil.save_cfg(self.current_files, save_file_path)
 
     def on_update_progress_bar(self, progress):
         if self.progress_bar is None:
@@ -186,8 +200,8 @@ class GetFileListPanel(wx.Panel):
         self.__on_set_filter()
 
     def show_folder_info(self, is_show_foler_info):
-        self.is_show_foler_info = is_show_foler_info
-        if self.is_show_foler_info:
+        self.is_show_folder_info = is_show_foler_info
+        if self.is_show_folder_info:
             self.folderInfoText.Show()
             self.addFolderBtn.Show()
             self.resetBtn.Show()

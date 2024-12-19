@@ -41,7 +41,7 @@ class GetFileListMenu:
 
         save_folder_info_id = wx.NewId()
         self.save_folder_info = file_menu.AppendCheckItem(save_folder_info_id, 'Save folder &info', 'Save folder info')
-        self.parent.Bind(wx.EVT_MENU, self.parent.save_foler_info, self.save_folder_info)
+        self.parent.Bind(wx.EVT_MENU, self.parent.save_folder_info, self.save_folder_info)
         self.save_folder_info.Check(True)
 
         save_filelist_id = wx.NewId()
@@ -68,6 +68,12 @@ class GetFileListMenu:
 
     def is_show_folder_info_menu(self):
         return self.show_folder_info.IsChecked() is True
+
+    def toggle_show_folder_info_menu(self):
+        if self.show_folder_info.IsChecked():
+            self.show_folder_info.Check(False)
+        else:
+            self.show_folder_info.Check(True)
 
     def is_save_folder_info_menu(self):
         return self.save_folder_info.IsChecked() is True

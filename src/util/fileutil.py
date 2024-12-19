@@ -276,3 +276,34 @@ def save_cfg(folder_info, filename=""):
             json.dump(save_data, jsonfile, indent=2)
     except:
         logger.info("Error to SAVE CFG file")
+
+
+def save_tab_name(tab_name, filename=""):
+    logger = logging.getLogger('getfilelist')
+    save_data = {'tab_name': tab_name}
+    try:
+        with open(filename, 'w') as jsonfile:
+            json.dump(save_data, jsonfile, indent=2)
+    except:
+        logger.info("Error to SAVE TAB NAME file")
+
+
+def load_tab_name(filename=""):
+    logger = logging.getLogger('getfilelist')
+
+    if len(filename) == 0:
+        return []
+
+    if not os.path.exists(filename):
+        logger.info(f"CFG({filename}) is not exist!")
+        return []
+
+    json_data = {}
+    try:
+        with open(filename) as json_file:
+            json_data = json.load(json_file)
+    except:
+        logger.info("Error to load TAB NAME file")
+
+    tab_name = json_data.get('tab_name', [])
+    return tab_name
