@@ -190,7 +190,7 @@ def get_filename(filename):
     return filename[ridx+1:]
 
 
-def isSameFile(f1, f2):
+def is_same_file(f1, f2):
     bufsize = LIMITED_SIZE
     with open(f1, 'rb') as fp1, open(f2, 'rb') as fp2:
         b1 = fp1.read(bufsize)

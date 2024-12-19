@@ -18,11 +18,11 @@ class GetFileListFrame(wx.Frame):
 
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
-        self._addMenubar()
+        self._add_menubar()
         self._addShortKey()
         self.on_load_previous_folder_info()
 
-    def _addMenubar(self):
+    def _add_menubar(self):
         self.menu = GetFileListMenu(self)
 
     def _addShortKey(self):
