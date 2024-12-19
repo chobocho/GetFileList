@@ -4,8 +4,7 @@ from ui.getfilelistpanel import *
 from ui.menu import *
 from manager import ActionManager
 import logging
-
-from src.util import fileutil
+import util.fileutil as fileutil
 
 MAX_TAB_COUNT = 5
 
