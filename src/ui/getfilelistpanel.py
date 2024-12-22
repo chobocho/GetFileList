@@ -14,7 +14,7 @@ BTN_HEIGHT = 30
 
 
 class GetFileListPanel(wx.Panel):
-    def __init__(self, parent, tab_idx = 0, frame = None,  *args, **kw):
+    def __init__(self, parent, *args, tab_idx = 0, frame = None, **kw):
         super(GetFileListPanel, self).__init__(parent, *args, **kw)
         filedrop = FileDrop(self)
         self.logger = logging.getLogger('getfilelist')
@@ -33,6 +33,7 @@ class GetFileListPanel(wx.Panel):
         self.tab_idx = tab_idx
         self.is_load_folder_info = False
         self.parent = frame
+        self.color_tbl = [(227, 242, 253), (187, 222, 251), (144, 202, 249), (129, 212, 250), (130, 177, 255)]
         self._initUi()
 
     def load_folder_info(self):
@@ -73,8 +74,8 @@ class GetFileListPanel(wx.Panel):
         self.addFolderBtn.Bind(wx.EVT_BUTTON, self._OnAddFolder)
         folderInfoBox.Add(self.addFolderBtn, 0, wx.ALIGN_CENTRE | wx.LEFT, 1)
 
-        resetBtnId = wx.NewId()
-        self.resetBtn = wx.Button(self, resetBtnId, "&Reset", size=(BTN_SIZE, 30))
+        reset_btn_id = wx.NewId()
+        self.resetBtn = wx.Button(self, reset_btn_id, "&Reset", size=(BTN_SIZE, 30))
         self.resetBtn.Bind(wx.EVT_BUTTON, self._OnReset)
         folderInfoBox.Add(self.resetBtn, 0, wx.ALIGN_CENTRE | wx.LEFT, 1)
 
@@ -161,6 +162,9 @@ class GetFileListPanel(wx.Panel):
 
         tab_name = os.path.basename(filelist[0]) if len(filelist) > 0 else "_EMPTY_"
         self.parent.update_notebook(self.tab_idx, tab_name)
+        color = (255, 255, 255) if tab_name == "_EMPTY_" else self.color_tbl[self.tab_idx]
+        self.folderInfoText.SetBackgroundColour(color)
+        self.Refresh()
 
     def on_save_current_folder(self):
         self.logger.info(".")

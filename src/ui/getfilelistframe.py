@@ -229,7 +229,9 @@ class GetFileListFrame(wx.Frame):
         self.textPanel.save_folder_info(self.menu.is_save_folder_info_menu())
 
     def update_notebook(self, tab_idx, tab_name):
-        self.notebook.SetPageText(tab_idx, tab_name)
         if self.tab_name[tab_idx] != tab_name:
+            if len(tab_name) > 25:
+                tab_name = tab_name[:22] + "..."
             self.tab_name[tab_idx] = tab_name
             fileutil.save_tab_name(self.tab_name, "./tab_name.cfg")
+        self.notebook.SetPageText(tab_idx, tab_name)
