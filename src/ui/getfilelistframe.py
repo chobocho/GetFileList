@@ -192,11 +192,14 @@ class GetFileListFrame(wx.Frame):
         file_name_only = os.path.basename(file_name)
 
         file_size = os.path.getsize(file_name)
-        msg = f'\n{file_name_only}\n\n' \
-              f'{file_size / (1000 * 1000 * 1000):,.2f} GB\n' \
-              f'\n{file_size / (1000 * 1000):,.1f} MB\n\n' \
-              f'{file_size // 1000:,} KB\n' \
-              f'{file_size:,} Bytes\n'
+        msg = f'\n{file_name_only}\n'
+
+        if file_size > 1000 * 1000 * 1000:
+            msg += f'\n{file_size / (1000 * 1000 * 1000):,.2f} GB\n'
+
+        msg += f'\n{file_size / (1000 * 1000):,.1f} MB\n\n' \
+               f'{file_size // 1000:,} KB\n' \
+               f'{file_size:,} Bytes\n'
         wx.MessageBox(msg, title, wx.OK | wx.ICON_INFORMATION)
 
     def OnAbout(self, event):
