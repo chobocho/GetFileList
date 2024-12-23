@@ -83,43 +83,34 @@ class GetFileListFrame(wx.Frame):
         self.menu = GetFileListMenu(self)
 
     def _addShortKey(self):
-        self.Bind(wx.EVT_MENU, self.OnCopyToClipboard, id=(ctrl_C_Id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self._OnCtrl_D, id=(ctrl_D_Id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self._OnCtrl_M, id=(ctrl_M_Id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self._OnCtrl_O, id=(ctrl_O_Id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self._OnCtrl_P, id=(ctrl_P_Id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self.OnQuit, id=(ctrl_Q_Id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self._on_rename, id=(rename_id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self._OnFocusFilter, id=(focus_on_search_box_id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self._OnClearFilter, id=(alt_C_Id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self.on_display_file_size, id=(display_file_size_id := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self.on_select_tab0, id=(select_tab0 := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self.on_select_tab1, id=(select_tab1 := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self.on_select_tab2, id=(select_tab2 := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self.on_select_tab3, id=(select_tab3 := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self.on_select_tab4, id=(select_tab4 := wx.NewIdRef()))
-        self.Bind(wx.EVT_MENU, self.on_select_next_tab, id=(select_next_tab := wx.NewIdRef()))
+        accel_tbl = []
+        for item in self.init_key_map():
+            self.Bind(wx.EVT_MENU, item['func'], id=(new_id := wx.NewIdRef()))
+            accel_tbl.append((item["key"][0], item["key"][1], new_id))
 
-        accel_tbl = wx.AcceleratorTable([
-            (wx.ACCEL_ALT, ord('C'), alt_C_Id),
-            (wx.ACCEL_ALT, ord('D'), focus_on_search_box_id),
-            (wx.ACCEL_CTRL, ord('1'), select_tab0),
-            (wx.ACCEL_CTRL, ord('2'), select_tab1),
-            (wx.ACCEL_CTRL, ord('3'), select_tab2),
-            (wx.ACCEL_CTRL, ord('4'), select_tab3),
-            (wx.ACCEL_CTRL, ord('5'), select_tab4),
-            (wx.ACCEL_CTRL, ord('C'), ctrl_C_Id),
-            (wx.ACCEL_CTRL, ord('F'), focus_on_search_box_id),
-            (wx.ACCEL_CTRL, ord('M'), ctrl_M_Id),
-            (wx.ACCEL_CTRL, ord('L'), display_file_size_id),
-            (wx.ACCEL_CTRL, ord('O'), ctrl_O_Id),
-            (wx.ACCEL_CTRL, ord('P'), ctrl_P_Id),
-            (wx.ACCEL_CTRL, ord('T'), select_next_tab),
-            (wx.ACCEL_CTRL, ord('Q'), ctrl_Q_Id),
-            (wx.ACCEL_CTRL | wx.ACCEL_ALT, ord('D'), ctrl_D_Id),
-            (wx.ACCEL_SHIFT, wx.WXK_F6, rename_id)
-        ])
-        self.SetAcceleratorTable(accel_tbl)
+        self.SetAcceleratorTable(wx.AcceleratorTable(accel_tbl))
+
+    def init_key_map(self):
+        key_map = []
+        key_map.append({"key": (wx.ACCEL_ALT, ord('C')), "func": self._OnClearFilter})
+        key_map.append({"key": (wx.ACCEL_ALT, ord('D')), "func": self._OnFocusFilter})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('1')), "func": self.on_select_tab0})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('2')), "func": self.on_select_tab1})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('3')), "func": self.on_select_tab2})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('4')), "func": self.on_select_tab3})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('5')), "func": self.on_select_tab4})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('C')), "func": self.OnCopyToClipboard})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('F')), "func": self._OnFocusFilter})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('M')), "func": self._OnCtrl_M})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('L')), "func": self.on_display_file_size})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('O')), "func": self._OnCtrl_O})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('P')), "func": self._OnCtrl_P})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('T')), "func": self.on_select_next_tab})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('Q')), "func": self.OnQuit})
+        key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_ALT, ord('D')), "func": self._OnCtrl_D})
+        key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('L')), "func": self.OnReload})
+        key_map.append({"key": (wx.ACCEL_SHIFT, wx.WXK_F6), "func": self._on_rename})
+        return key_map
 
     def OnQuit(self, event):
         self.Close()
