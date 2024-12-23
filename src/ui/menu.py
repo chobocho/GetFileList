@@ -49,10 +49,10 @@ class GetFileListMenu:
         self.parent.Bind(wx.EVT_MENU, self.parent.OnSaveAsExcel, save_filelist)
 
         reload_item_id = wx.NewId()
-        reload_item = file_menu.Append(reload_item_id, '&Reload', 'Reload folders')
+        reload_item = file_menu.Append(reload_item_id, '&Reload\tCtrl+Shfit+L', 'Reload folders')
         self.parent.Bind(wx.EVT_MENU, self.parent.OnReload, reload_item)
 
-        quit_item = file_menu.Append(wx.ID_EXIT, '&Quit', 'Quit App')
+        quit_item = file_menu.Append(wx.ID_EXIT, '&Quit\tCtrl+Q', 'Quit App')
         self.parent.Bind(wx.EVT_MENU, self.parent.OnQuit, quit_item)
 
         menubar.Append(file_menu, '&File')
