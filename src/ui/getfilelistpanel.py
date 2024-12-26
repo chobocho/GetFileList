@@ -332,6 +332,26 @@ class GetFileListPanel(wx.Panel):
             self.OnCallback([])
             self.doaction.OnReset()
         ask_reset_dialog.Destroy()
+        
+    def on_append_folder(self, event):
+        clipboard_data = ""
+        if wx.TheClipboard.Open():
+            clipboard_object = wx.TextDataObject()
+            if wx.TheClipboard.GetData(clipboard_object):
+                clipboard_data = clipboard_object.GetText()
+            wx.TheClipboard.Close()
+
+        if clipboard_data is None:
+            return
+
+        file_list = clipboard_data.splitlines()
+        for file in file_list:
+            if not os.path.exists(file):
+                continue
+            if file not in self.current_files:
+                self.current_files.append(clipboard_data)
+
+        self.OnCallback(self.current_files)
 
     def _OnAddFolder(self, event):
         newFolder = ""

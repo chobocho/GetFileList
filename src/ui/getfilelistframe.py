@@ -68,6 +68,9 @@ class GetFileListFrame(wx.Frame):
         current_tab = (self.notebook.GetSelection() + 1) % self.notebook.GetPageCount()
         self.select_tab(current_tab)
 
+    def on_append_folder(self, event):
+        self.textPanel.on_append_folder(event)
+
     def select_tab(self, tab_idx):
         self.notebook.SetSelection(tab_idx)
         self.textPanel = self.panel_manager[tab_idx].panel
@@ -109,6 +112,7 @@ class GetFileListFrame(wx.Frame):
         key_map.append({"key": (wx.ACCEL_CTRL, ord('Q')), "func": self.OnQuit})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_ALT, ord('D')), "func": self._OnCtrl_D})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('L')), "func": self.OnReload})
+        key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('V')), "func": self.on_append_folder})
         key_map.append({"key": (wx.ACCEL_SHIFT, wx.WXK_F6), "func": self._on_rename})
         return key_map
 

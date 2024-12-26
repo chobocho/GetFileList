@@ -48,9 +48,17 @@ class GetFileListMenu:
         save_filelist = file_menu.Append(save_filelist_id, '&Save as Excel', 'Save as Excel')
         self.parent.Bind(wx.EVT_MENU, self.parent.OnSaveAsExcel, save_filelist)
 
+        file_menu.AppendSeparator()
+
+        append_from_clipboard_id = wx.NewId()
+        append_from_clipboard = file_menu.Append(append_from_clipboard_id, '&Append from clipboard\tCtrl+Shift+V', 'Append from clipboard')
+        self.parent.Bind(wx.EVT_MENU, self.parent.on_append_folder, append_from_clipboard)
+
         reload_item_id = wx.NewId()
         reload_item = file_menu.Append(reload_item_id, '&Reload\tCtrl+Shfit+L', 'Reload folders')
         self.parent.Bind(wx.EVT_MENU, self.parent.OnReload, reload_item)
+
+        file_menu.AppendSeparator()
 
         quit_item = file_menu.Append(wx.ID_EXIT, '&Quit\tCtrl+Q', 'Quit App')
         self.parent.Bind(wx.EVT_MENU, self.parent.OnQuit, quit_item)
