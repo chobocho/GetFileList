@@ -56,7 +56,7 @@ class GetFileListMenu:
 
         reload_item_id = wx.NewId()
         reload_item = file_menu.Append(reload_item_id, '&Reload\tCtrl+Shfit+L', 'Reload folders')
-        self.parent.Bind(wx.EVT_MENU, self.parent.OnReload, reload_item)
+        self.parent.Bind(wx.EVT_MENU, self.parent.on_reload, reload_item)
 
         file_menu.AppendSeparator()
 

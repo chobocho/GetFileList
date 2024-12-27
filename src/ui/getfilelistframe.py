@@ -6,7 +6,8 @@ from manager import ActionManager
 import logging
 import util.fileutil as fileutil
 
-MAX_TAB_COUNT = 5
+MAX_TAB_COUNT = 8
+EMPTY_TAB_NAME = "__EMPTY__"
 
 class PanelManager:
     def __init__(self, parent, tab_idx, frame=None):
@@ -24,8 +25,8 @@ class GetFileListFrame(wx.Frame):
         self.tab_name = []
         for i in range(MAX_TAB_COUNT):
             self.panel_manager.append(PanelManager(self.notebook, tab_idx=i, frame=self))
-            self.notebook.AddPage(self.panel_manager[i].panel, "_EMPTY_")
-            self.tab_name.append("_EMPTY_")
+            self.notebook.AddPage(self.panel_manager[i].panel, EMPTY_TAB_NAME)
+            self.tab_name.append(EMPTY_TAB_NAME)
         self.textPanel = self.panel_manager[0].panel
         self.action = self.panel_manager[0].action
         self.version = version
@@ -39,10 +40,10 @@ class GetFileListFrame(wx.Frame):
         self._addShortKey()
 
         tab_name = fileutil.load_tab_name("./tab_name.cfg")
-        if len(tab_name) == 5:
-            for i in range(self.notebook.GetPageCount()):
-                self.notebook.SetPageText(i, tab_name[i])
-                self.tab_name[i] = tab_name[i]
+        tab_count = min(len(tab_name), MAX_TAB_COUNT)
+        for i in range(tab_count):
+            self.notebook.SetPageText(i, tab_name[i])
+            self.tab_name[i] = tab_name[i]
 
         self.on_load_previous_folder_info()
 
@@ -64,8 +65,21 @@ class GetFileListFrame(wx.Frame):
     def on_select_tab4(self, event):
         self.select_tab(4)
 
+    def on_select_tab5(self, event):
+        self.select_tab(5)
+
+    def on_select_tab6(self, event):
+        self.select_tab(6)
+
+    def on_select_tab7(self, event):
+        self.select_tab(7)
+
     def on_select_next_tab(self, event):
         current_tab = (self.notebook.GetSelection() + 1) % self.notebook.GetPageCount()
+        self.select_tab(current_tab)
+
+    def on_select_previous_tab(self, event):
+        current_tab = (self.notebook.GetSelection() + self.notebook.GetPageCount() - 1) % self.notebook.GetPageCount()
         self.select_tab(current_tab)
 
     def on_append_folder(self, event):
@@ -102,6 +116,9 @@ class GetFileListFrame(wx.Frame):
         key_map.append({"key": (wx.ACCEL_CTRL, ord('3')), "func": self.on_select_tab2})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('4')), "func": self.on_select_tab3})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('5')), "func": self.on_select_tab4})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('6')), "func": self.on_select_tab5})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('7')), "func": self.on_select_tab6})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('8')), "func": self.on_select_tab7})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('C')), "func": self.OnCopyToClipboard})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('F')), "func": self._OnFocusFilter})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('M')), "func": self._OnCtrl_M})
@@ -111,7 +128,8 @@ class GetFileListFrame(wx.Frame):
         key_map.append({"key": (wx.ACCEL_CTRL, ord('T')), "func": self.on_select_next_tab})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('Q')), "func": self.OnQuit})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_ALT, ord('D')), "func": self._OnCtrl_D})
-        key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('L')), "func": self.OnReload})
+        key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('L')), "func": self.on_reload})
+        key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('T')), "func": self.on_select_previous_tab})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('V')), "func": self.on_append_folder})
         key_map.append({"key": (wx.ACCEL_SHIFT, wx.WXK_F6), "func": self._on_rename})
         return key_map
@@ -122,8 +140,8 @@ class GetFileListFrame(wx.Frame):
     def OnSaveAsExcel(self, event):
         self.textPanel.OnSaveAsExcel()
 
-    def OnReload(self, event):
-        self.textPanel.OnReload()
+    def on_reload(self, event):
+        self.textPanel.on_reload()
 
     def OnCopyToClipboard(self, event):
         self.textPanel.OnCopyToClipboard()
@@ -136,11 +154,11 @@ class GetFileListFrame(wx.Frame):
         title = 'Do you want to delete'
         msg = '> ' + filename
 
-        askDeleteDialog = wx.MessageDialog(None, msg, title, wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
-        if askDeleteDialog.ShowModal() == wx.ID_YES:
+        ask_delete_dialog = wx.MessageDialog(None, msg, title, wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+        if ask_delete_dialog.ShowModal() == wx.ID_YES:
             self.action.on_run_command("delete", filename)
-            self.textPanel.OnReload()
-        askDeleteDialog.Destroy()
+            self.textPanel.on_reload()
+        ask_delete_dialog.Destroy()
 
     def _OnCtrl_H(self, event):
         self.menu.toggle_show_menu()
@@ -177,7 +195,7 @@ class GetFileListFrame(wx.Frame):
         if len(new_file_name) == 0:
             return
         if self.action.on_rename(file_name, os.path.join(file_path, new_file_name)):
-            self.textPanel.OnReload()
+            self.textPanel.on_reload()
 
     def _OnFocusFilter(self, event):
         self.textPanel.OnFocusFilter()

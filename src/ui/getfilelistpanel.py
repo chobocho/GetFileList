@@ -11,7 +11,7 @@ MAX_VIEW_COUNT = 200
 WINDOW_SIZE = 840
 BTN_SIZE = 50
 BTN_HEIGHT = 30
-
+EMPTY_TAB_NAME = "__EMPTY__"
 
 class GetFileListPanel(wx.Panel):
     def __init__(self, parent, *args, tab_idx = 0, frame = None, **kw):
@@ -33,7 +33,8 @@ class GetFileListPanel(wx.Panel):
         self.tab_idx = tab_idx
         self.is_load_folder_info = False
         self.parent = frame
-        self.color_tbl = [(227, 242, 253), (187, 222, 251), (144, 202, 249), (129, 212, 250), (130, 177, 255)]
+        self.color_tbl = [(227, 242, 253), (187, 222, 251), (144, 202, 249), (129, 212, 250),
+                          (130, 177, 255), (232, 234, 246), (225, 245, 254), (224, 247, 250)]
         self._initUi()
 
     def load_folder_info(self):
@@ -160,9 +161,9 @@ class GetFileListPanel(wx.Panel):
         self.on_save_current_folder()
         self.is_load_folder_info = True
 
-        tab_name = os.path.basename(filelist[0]) if len(filelist) > 0 else "_EMPTY_"
+        tab_name = os.path.basename(filelist[0]) if len(filelist) > 0 else EMPTY_TAB_NAME
         self.parent.update_notebook(self.tab_idx, tab_name)
-        color = (255, 255, 255) if tab_name == "_EMPTY_" else self.color_tbl[self.tab_idx]
+        color = (255, 255, 255) if tab_name == EMPTY_TAB_NAME else self.color_tbl[self.tab_idx]
         self.folderInfoText.SetBackgroundColour(color)
         self.Refresh()
 
@@ -187,8 +188,8 @@ class GetFileListPanel(wx.Panel):
         # self.text.SetValue(fileList)
         self.OnUpdateList(files)
 
-    def OnReload(self):
-        print("Reload")
+    def on_reload(self):
+        print("on_reload")
         self.chosenItem = ""
 
         check_file_list = []
@@ -284,7 +285,7 @@ class GetFileListPanel(wx.Panel):
         self._OnItemSelected(self.currentItem)
         if not os.path.exists(self.chosenItem):
             self.chosenItem = ""
-            self.OnReload()
+            self.on_reload()
             return
         chosenItem = '"' + self.chosenItem + '"'
         os.startfile(chosenItem)
