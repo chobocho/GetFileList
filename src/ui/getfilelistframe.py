@@ -42,7 +42,7 @@ class GetFileListFrame(wx.Frame):
         tab_name = fileutil.load_tab_name("./tab_name.cfg")
         tab_count = min(len(tab_name), MAX_TAB_COUNT)
         for i in range(tab_count):
-            self.notebook.SetPageText(i, tab_name[i])
+            self.notebook.SetPageText(i, f"[{i+1}] {tab_name[i]}")
             self.tab_name[i] = tab_name[i]
 
         self.on_load_previous_folder_info()
@@ -125,12 +125,14 @@ class GetFileListFrame(wx.Frame):
         key_map.append({"key": (wx.ACCEL_CTRL, ord('L')), "func": self.on_display_file_size})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('O')), "func": self._OnCtrl_O})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('P')), "func": self._OnCtrl_P})
+        key_map.append({"key": (wx.ACCEL_CTRL, ord('R')), "func": self._on_rename})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('T')), "func": self.on_select_next_tab})
         key_map.append({"key": (wx.ACCEL_CTRL, ord('Q')), "func": self.OnQuit})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_ALT, ord('D')), "func": self._OnCtrl_D})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('L')), "func": self.on_reload})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('T')), "func": self.on_select_previous_tab})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('V')), "func": self.on_append_folder})
+        key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('6')), "func": self._on_rename})
         key_map.append({"key": (wx.ACCEL_SHIFT, wx.WXK_F6), "func": self._on_rename})
         return key_map
 
@@ -250,4 +252,4 @@ class GetFileListFrame(wx.Frame):
                 tab_name = tab_name[:22] + "..."
             self.tab_name[tab_idx] = tab_name
             fileutil.save_tab_name(self.tab_name, "./tab_name.cfg")
-        self.notebook.SetPageText(tab_idx, tab_name)
+        self.notebook.SetPageText(tab_idx, f"[{tab_idx+1}] {tab_name}")
