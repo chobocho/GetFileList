@@ -17,6 +17,10 @@ class GetFileListMenu:
 
     def _add_help_menu(self, menubar):
         help_menu = wx.Menu()
+        shortcut_item_id = wx.NewId()
+        shortcut_item = help_menu.Append(shortcut_item_id, '&Shortcuts\tF1', 'Show shortcuts')
+        self.parent.Bind(wx.EVT_MENU, self.parent.on_help, shortcut_item)
+
         about_item_id = wx.NewId()
         about_item = help_menu.Append(about_item_id, '&About', 'About')
         self.parent.Bind(wx.EVT_MENU, self.parent.OnAbout, about_item)
@@ -55,7 +59,7 @@ class GetFileListMenu:
         self.parent.Bind(wx.EVT_MENU, self.parent.on_append_folder, append_from_clipboard)
 
         reload_item_id = wx.NewId()
-        reload_item = file_menu.Append(reload_item_id, '&Reload\tCtrl+Shfit+L', 'Reload folders')
+        reload_item = file_menu.Append(reload_item_id, '&Reload\tCtrl+Shift+L', 'Reload folders')
         self.parent.Bind(wx.EVT_MENU, self.parent.on_reload, reload_item)
 
         file_menu.AppendSeparator()

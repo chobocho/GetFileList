@@ -2,6 +2,7 @@ import wx
 import os
 from ui.getfilelistpanel import *
 from ui.menu import *
+from ui.helpdialog import HelpDialog
 from manager import ActionManager
 import logging
 import util.fileutil as fileutil
@@ -134,6 +135,7 @@ class GetFileListFrame(wx.Frame):
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('V')), "func": self.on_append_folder})
         key_map.append({"key": (wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('6')), "func": self._on_rename})
         key_map.append({"key": (wx.ACCEL_SHIFT, wx.WXK_F6), "func": self._on_rename})
+        key_map.append({"key": (wx.ACCEL_NORMAL, wx.WXK_F1), "func": self.on_help})
         return key_map
 
     def OnQuit(self, event):
@@ -225,6 +227,10 @@ class GetFileListFrame(wx.Frame):
                f'{file_size // 1000:,} KB\n' \
                f'{file_size:,} Bytes\n'
         wx.MessageBox(msg, title, wx.OK | wx.ICON_INFORMATION)
+
+    def on_help(self, event):
+        with HelpDialog(self) as help_dialog:
+            help_dialog.ShowModal()
 
     def OnAbout(self, event):
         msg = self.version + '\nhttp://chobocho.com'
