@@ -14,3 +14,19 @@
 /src/buildinfo/dist
 /src/buildinfo/version.json.bak
 /release
+
+# 임시 CFG 파일
+/src/getfilelist.cfg
+/src/getfilelist0.cfg
+/src/getfilelist1.cfg
+/src/getfilelist2.cfg
+/src/getfilelist3.cfg
+/src/getfilelist4.cfg
+/src/getfilelist5.cfg
+/src/getfilelist6.cfg
+/src/getfilelist7.cfg
+/src/tab_name.cfg
+history.html
+
+# IDE
+.idea
